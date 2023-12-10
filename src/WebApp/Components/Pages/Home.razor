@@ -1,6 +1,9 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject OrderState orderState
 
 <PageTitle>Home</PageTitle>
+
 <div class="row">
     <div class="col-8">
         <Items></Items>
@@ -9,3 +12,10 @@
         <ItemsCard></ItemsCard>
     </div>
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await orderState.GetItems();
+    }
+}

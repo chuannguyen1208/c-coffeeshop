@@ -1,7 +1,18 @@
 ﻿@namespace MyComp
+@inject OrderState orderState
 
-<h3>ItemsCard</h3>
+<div>
+    <ul>
+        @foreach (var orderItem in orderState.OrderItems)
+        {
+            <li>@orderItem.ItemId - @orderItem.Quantity</li>
+        }
+    </ul>
+</div>
 
 @code {
-
+    protected override void OnInitialized()
+    {
+        orderState.OnChange += StateHasChanged;
+    }
 }

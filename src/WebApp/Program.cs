@@ -4,11 +4,12 @@ using CShop.Infras;
 using Microsoft.EntityFrameworkCore;
 using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+using WebApp.State;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddUseCases().AddInfras(builder.Configuration);
-
+builder.Services.AddScoped<OrderState>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

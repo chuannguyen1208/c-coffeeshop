@@ -1,21 +1,16 @@
 ﻿@namespace MyComp
-@inject IItemService itemService
+@inject OrderState orderState
 
 <div class="row">
-    @foreach (var item in items)
+    @foreach (var item in orderState.Items)
     {
         <div class="col-4">
             @item.Name - @item.Price
+            <button class="btn btn-primary" @onclick="() => orderState.AddItem(item, 1)">Add</button>
         </div>
     }
 </div>
 
 
 @code {
-    public IEnumerable<ItemDto> items = Enumerable.Empty<ItemDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        items = await itemService.GetItems();
-    }
 }
