@@ -2,19 +2,109 @@
 @implements IDisposable
 @inject OrderState orderState
 
-<div>
-    <ul>
-        @foreach (var orderItem in orderState.OrderItems)
-        {
-            <li>@orderItem.ItemId - @orderItem.Quantity</li>
-        }
-    </ul>
+<div class="row">
+    <div class="col pt-2">
+        <div class="card p-2">
+            <ul class="list-group">
+                @foreach (var orderItem in orderState.OrderItems)
+                {
+                    <li class="list-group-item p-2 item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <img src="img/coffee.jpg" style="width: 30px" />
+                                @orderItem.Name - @($"{orderItem.Price}$")
+                            </div>
+                            <div class="d-flex">
+                                <button class="btn btn-secondary" @onclick="() => orderState.MinusQuantity(orderItem)">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input class="form-control mx-1 text-center bg-white" @bind-value="orderItem.Quantity" style="width: 36px" />
+                                <button class="btn btn-secondary" @onclick="() => orderState.AddQuantity(orderItem)">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+            <div class="d-flex justify-content-between mt-2">
+                <div></div>
+                <div>@($"{orderState.TotalPrice}$")</div>
+            </div>
+            <div class="mt-2 p-2 cash">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>Tip</div>
+                    <div class="d-flex align-items-center">
+                        <span>USD</span>
+                        <input class="form-control ms-2 bg-white"
+                               style="width: 100px; text-align: end"
+                               @bind-value="amount"
+                               @oninput="FormatCurrency"
+                               tabindex="0" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-4">
+                        <btn class="form-control btn text-center bg-white" tabindex="0" @onclick="() => SetAmount(5)">+5$</btn>
+                    </div>
+                    <div class="col-4">
+                        <btn class="form-control btn text-center bg-white" tabindex="0" @onclick="() => SetAmount(10)">+10$</btn>
+                    </div>
+                    <div class="col-4">
+                        <btn class="form-control btn text-center bg-white" tabindex="0" @onclick="() => SetAmount(15)">+15$</btn>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-4">
+                        <btn class="form-control btn text-center bg-white" tabindex="0" @onclick="() => SetAmount(20)">+20$</btn>
+                    </div>
+                    <div class="col-4">
+                        <btn class="form-control btn text-center bg-white" tabindex="0" @onclick="() => SetAmount(25)">+25$</btn>
+                    </div>
+                    <div class="col-4">
+                        <btn class="form-control btn text-center bg-white" tabindex="0" @onclick="() => SetAmount(50)">+50$</btn>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div>Total</div>
+                <div>@($"{orderState.TotalPrice + orderState.Tip}$")</div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-12">
+                    <btn class="btn btn-primary form-control" tabindex="0">Submit</btn>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
+    private decimal amount;
+    private string? formattedAmount;
+
     protected override void OnInitialized()
     {
         orderState.OnChange += StateHasChanged;
+    }
+
+    private void FormatCurrency(ChangeEventArgs e)
+    {
+        if (decimal.TryParse(e?.Value?.ToString(), out decimal parsedAmount))
+        {
+            SetAmount(parsedAmount);
+            formattedAmount = amount.ToString("C");
+        }
+        else
+        {
+            formattedAmount = "Invalid Input";
+        }
+    }
+
+    private void SetAmount(decimal val)
+    {
+        amount = val;
+        orderState.AddTip(amount);
     }
 
     public void Dispose()

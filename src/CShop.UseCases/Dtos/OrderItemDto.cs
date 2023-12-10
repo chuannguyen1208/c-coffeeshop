@@ -10,8 +10,10 @@ namespace CShop.UseCases.Dtos;
 public class OrderItemDto
 {
     public int Id { get; set; }
-    public int ItemId { get; set; }
-    public int Quantity { get; set; }
+    public required int ItemId { get; set; }
+    public required string Name { get; set; }
+    public required int Quantity { get; set; }
+    public required decimal Price { get; set; }
 }
 
 public class OrderItemDtoProfile : Profile
