@@ -1,4 +1,5 @@
 ﻿@namespace MyComp
+@implements IDisposable
 @inject OrderState orderState
 
 <div>
@@ -14,5 +15,10 @@
     protected override void OnInitialized()
     {
         orderState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        orderState.OnChange -= StateHasChanged;
     }
 }
