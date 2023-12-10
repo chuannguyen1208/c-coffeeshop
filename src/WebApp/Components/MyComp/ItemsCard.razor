@@ -5,28 +5,32 @@
 <div class="row">
     <div class="col pt-2">
         <div class="card p-2">
-            <ul class="list-group">
-                @foreach (var orderItem in orderState.OrderItems)
-                {
-                    <li class="list-group-item p-2 item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <img src="img/coffee.jpg" style="width: 30px" />
-                                @orderItem.Name - @($"{orderItem.Price}$")
+            @if (orderState.OrderItems.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var orderItem in orderState.OrderItems)
+                    {
+                        <li class="list-group-item p-2 mb-2 item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <img src="img/coffee.jpg" style="width: 30px" />
+                                    @orderItem.Name - @($"{orderItem.Price}$")
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-secondary" @onclick="() => orderState.MinusQuantity(orderItem)">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input class="form-control mx-1 text-center bg-white" @bind-value="orderItem.Quantity" style="width: 36px" />
+                                    <button class="btn btn-secondary" @onclick="() => orderState.AddQuantity(orderItem)">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="d-flex">
-                                <button class="btn btn-secondary" @onclick="() => orderState.MinusQuantity(orderItem)">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input class="form-control mx-1 text-center bg-white" @bind-value="orderItem.Quantity" style="width: 36px" />
-                                <button class="btn btn-secondary" @onclick="() => orderState.AddQuantity(orderItem)">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                }
-            </ul>
+                        </li>
+                    }
+                </ul>
+            }
+
             <div class="d-flex justify-content-between mt-2">
                 <div></div>
                 <div>@($"{orderState.TotalPrice}$")</div>
