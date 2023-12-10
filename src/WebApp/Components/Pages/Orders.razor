@@ -1,8 +1,18 @@
 ﻿@page "/orders"
+@inject IOrderService orderService
 
 <PageTitle>Orders</PageTitle>
-<h3>Orders</h3>
+
+@foreach (var order in orders)
+{
+    <div>@order.Id - @order.OrderItems.Count</div>
+}
 
 @code {
+    private IEnumerable<OrderDto> orders = Enumerable.Empty<OrderDto>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await orderService.GetOrders();
+    }
 }

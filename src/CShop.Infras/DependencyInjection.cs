@@ -9,10 +9,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfras(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<DbContext, ApplicationDbContext>(options =>
-        {
-            options.UseInMemoryDatabase("cshop");
-        });
+        services.AddDbContext<DbContext, ApplicationDbContext>(
+            options => options.UseLazyLoadingProxies()
+                .UseInMemoryDatabase("cshop"));
 
         services.AddScoped(typeof(IRepo<>), typeof(GenericRepo<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -12,7 +12,7 @@ namespace CShop.UseCases.Services;
 
 public interface IItemService
 {
-    Task UpsertItem(EditItemDto model);
+    Task UpsertItem(ItemDto model);
     Task DeleteItem(int id);
     Task<ItemDto> GetItem(int id);
     Task<IEnumerable<ItemDto>> GetItems();
@@ -36,7 +36,7 @@ internal class ItemService(IMediator mediator) : IItemService
         return res;
     }
 
-    public async Task UpsertItem(EditItemDto model)
+    public async Task UpsertItem(ItemDto model)
     {
         await mediator.Send(new UpsertItemCommand(model));
     }

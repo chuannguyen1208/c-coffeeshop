@@ -7,18 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.UseCases.Dtos;
-public class CreateOrderDto
-{
-    public List<OrderItemDto> Items { get; set; } = [];
-}
-
-public class EditOrderDto : CreateOrderDto
+public class OrderDto
 {
     public int Id { get; set; }
-}
-
-public class OrderDto : EditOrderDto
-{
+    public List<OrderItemDto> OrderItems { get; set; } = [];
 }
 
 public class OrderDtoProfile : Profile

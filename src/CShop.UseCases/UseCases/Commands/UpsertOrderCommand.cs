@@ -10,23 +10,29 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands;
-public record UpsertOrderCommand(EditOrderDto Model) : IRequest
+public record UpsertOrderCommand(OrderDto Model) : IRequest
 {
-    private class Handler(IRepo<Order> repo, IMapper mapper) : IRequestHandler<UpsertOrderCommand>
+    private class Handler(IRepo<Order> repo, IMapper mapper, IUnitOfWork unitOfWork) : IRequestHandler<UpsertOrderCommand>
     {
         public async Task Handle(UpsertOrderCommand request, CancellationToken cancellationToken)
         {
-            Order order = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
+            var order = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
 
-            if (order is null)
+            order ??= mapper.Map<Order>(request.Model);
+
+            var orderItems = mapper.Map<IEnumerable<OrderItem>>(request.Model.OrderItems);
+            order.SetItems(orderItems);
+
+            if (order.Id == 0)
             {
-                order = mapper.Map<Order>(order);
                 await repo.CreateAsync(order, cancellationToken).ConfigureAwait(false);
-
-                return;
+            }
+            else
+            {
+                await repo.UpdateAsync(order, cancellationToken).ConfigureAwait(false);
             }
 
-            throw new NotImplementedException();
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

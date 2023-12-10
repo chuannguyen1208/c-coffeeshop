@@ -9,9 +9,14 @@ public class Order
 {
     public int Id { get; set; }
     public decimal TotalPrice { get; set; }
-    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
     public OrderStatus Status { get; set; }
     public string? FailedReason { get; set; }
+
+    public void SetItems(IEnumerable<OrderItem> items)
+    {
+        OrderItems = items.ToList();
+    }
 }
 
 public enum OrderStatus

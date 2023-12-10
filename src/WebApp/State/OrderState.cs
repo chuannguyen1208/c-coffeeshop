@@ -3,7 +3,7 @@ using CShop.UseCases.Services;
 
 namespace WebApp.State;
 
-public class OrderState(IItemService itemService)
+public class OrderState(IItemService itemService, IOrderService orderService)
 {
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
@@ -18,9 +18,22 @@ public class OrderState(IItemService itemService)
         }
     }
 
+    private int orderId = 0;
+
     public async Task GetItems()
     {
         Items = await itemService.GetItems().ConfigureAwait(false);
+    }
+
+    public async Task Submit()
+    {
+        var model = new OrderDto
+        {
+            Id = orderId,
+            OrderItems = OrderItems
+        };
+
+        await orderService.UpsertOrder(model);
     }
 
     public void AddItem(ItemDto item)

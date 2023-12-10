@@ -76,7 +76,7 @@
             </div>
             <div class="row mt-5">
                 <div class="col-12">
-                    <btn class="btn btn-primary form-control" tabindex="0">Submit</btn>
+                    <btn class="btn btn-primary form-control" tabindex="0" @onclick="Submit">Submit</btn>
                 </div>
             </div>
         </div>
@@ -109,6 +109,11 @@
     {
         amount = val;
         orderState.AddTip(amount);
+    }
+
+    async Task Submit()
+    {
+        await orderState.Submit();
     }
 
     public void Dispose()

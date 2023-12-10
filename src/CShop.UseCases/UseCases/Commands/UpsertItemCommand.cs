@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands;
-public record UpsertItemCommand(EditItemDto Model) : IRequest
+public record UpsertItemCommand(ItemDto Model) : IRequest
 {
     private class Handler(IRepo<Item> repo, IMapper mapper) : IRequestHandler<UpsertItemCommand>
     {
