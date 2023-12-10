@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using CShop.UseCases.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,4 +21,12 @@ public class EditItemDto : CreateItemDto
 
 public class ItemDto : EditItemDto
 {
+}
+
+public class ItemDtoProfile : Profile
+{
+    public ItemDtoProfile()
+    {
+        CreateMap<Item, ItemDto>().ReverseMap();
+    }
 }

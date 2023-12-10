@@ -1,4 +1,5 @@
 ﻿using CShop.UseCases.Infras;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,31 +7,38 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.Infras.Repo;
-internal class GenericRepo<TEntity> : IRepo<TEntity>
+internal class GenericRepo<TEntity>(DbContext context) : IRepo<TEntity>
     where TEntity : class
 {
-    public Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
+    private DbSet<TEntity> _dbSet { get; init; } = context.Set<TEntity>();
+
+    public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await _dbSet.AddAsync(entity, cancellationToken);
+        return entity;
     }
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var entity = await _dbSet.FindAsync([id], cancellationToken: cancellationToken);
+        _dbSet.Remove(entity!);
     }
 
-    public Task<TEntity> GetAsync(int id, CancellationToken cancellationToken)
+    public async Task<TEntity?> GetAsync(int id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var entity = await _dbSet.FindAsync([id], cancellationToken: cancellationToken);
+        return entity;
     }
 
-    public Task<IEnumerable<TEntity>> GetManyAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<TEntity>> GetManyAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await Task.FromResult(_dbSet.AsEnumerable());
     }
 
-    public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _dbSet.Entry(entity).State = EntityState.Modified;
+        _dbSet.Update(entity);
+        await Task.CompletedTask;
     }
 }

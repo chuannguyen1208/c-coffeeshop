@@ -1,4 +1,5 @@
-﻿using CShop.UseCases.Entities;
+﻿using AutoMapper;
+using CShop.UseCases.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,4 +12,12 @@ public class OrderItemDto
     public int Id { get; set; }
     public int ItemId { get; set; }
     public int Quantity { get; set; }
+}
+
+public class OrderItemDtoProfile : Profile
+{
+    public OrderItemDtoProfile()
+    {
+        CreateMap<OrderItem, OrderItemDto>().ReverseMap();
+    }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using CShop.UseCases.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,4 +19,12 @@ public class EditOrderDto : CreateOrderDto
 
 public class OrderDto : EditOrderDto
 {
+}
+
+public class OrderDtoProfile : Profile
+{
+    public OrderDtoProfile()
+    {
+        CreateMap<Order, OrderDto>().ReverseMap();
+    }
 }

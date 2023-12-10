@@ -1,0 +1,21 @@
+﻿@namespace MyComp
+@inject IItemService itemService
+
+<div class="row">
+    @foreach (var item in items)
+    {
+        <div class="col-4">
+            @item.Name - @item.Price
+        </div>
+    }
+</div>
+
+
+@code {
+    public IEnumerable<ItemDto> items = Enumerable.Empty<ItemDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await itemService.GetItems();
+    }
+}

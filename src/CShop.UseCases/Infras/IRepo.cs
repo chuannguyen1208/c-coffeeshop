@@ -11,6 +11,6 @@ public interface IRepo<TEntity>
     Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken);
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
     Task DeleteAsync(int id, CancellationToken cancellationToken);
-    Task<TEntity> GetAsync(int id, CancellationToken cancellationToken);
+    Task<TEntity?> GetAsync(int id, CancellationToken cancellationToken);
     Task<IEnumerable<TEntity>> GetManyAsync(CancellationToken cancellationToken);
 }
