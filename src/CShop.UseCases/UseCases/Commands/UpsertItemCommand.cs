@@ -16,7 +16,7 @@ public record UpsertItemCommand(ItemDto Model) : IRequest
     {
         public async Task Handle(UpsertItemCommand request, CancellationToken cancellationToken)
         {
-            Item item = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
+            var item = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
 
             if (item is null)
             {
