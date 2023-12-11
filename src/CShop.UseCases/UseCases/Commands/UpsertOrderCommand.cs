@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Commands;
 public record UpsertOrderCommand(OrderDto Model) : IRequest
 {
-    private class Handler(IRepo<Order> repo, IMapper mapper, IUnitOfWork unitOfWork) : IRequestHandler<UpsertOrderCommand>
+    private class Handler(IRepo<Order> repo, IMapper mapper, IUnitOfWork unitOfWork, IMediator mediator) : IRequestHandler<UpsertOrderCommand>
     {
         public async Task Handle(UpsertOrderCommand request, CancellationToken cancellationToken)
         {
@@ -33,6 +33,19 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest
             }
 
             await unitOfWork.SaveChangesAsync();
+
+            await mediator.Publish(new UpsertOrderCommandCompleted(), cancellationToken);
+        }
+    }
+}
+
+public record UpsertOrderCommandCompleted : IRequest
+{
+    private class Handler : IRequestHandler<UpsertOrderCommandCompleted>
+    {
+        public async Task Handle(UpsertOrderCommandCompleted request, CancellationToken cancellationToken)
+        {
+            await Task.CompletedTask;
         }
     }
 }

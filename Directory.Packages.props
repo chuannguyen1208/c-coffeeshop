@@ -1,0 +1,65 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+		<PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1" />
+		<PackageVersion Include="Markdig" Version="0.33.0" />
+		<PackageVersion Include="MediatR" Version="12.2.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+		<PackageVersion Include="Serilog" Version="3.1.1" />
+		<PackageVersion Include="Serilog.AspNetCore" Version="8.0.0" />
+		<PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+		<PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
+		<PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.0" />
+		<PackageVersion Include="Serilog.Sinks.Console" Version="5.0.0" />
+		<PackageVersion Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
+		<PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageVersion Include="SonarAnalyzer.CSharp" Version="9.12.0.78982" />
+		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+		<PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
+		<PackageVersion Include="FluentResults" Version="3.15.2" />
+		<PackageVersion Include="Hangfire.AspNetCore" Version="1.8.6" />
+		<PackageVersion Include="Hangfire.PostgreSql" Version="1.20.4" />
+		<PackageVersion Include="MassTransit" Version="8.1.2" />
+		<PackageVersion Include="MassTransit.EntityFrameworkCore" Version="8.1.2" />
+		<PackageVersion Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+		<PackageVersion Include="MassTransit.RabbitMQ" Version="8.1.2" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.0" />
+		<PackageVersion Include="MongoDB.Driver" Version="2.22.0" />
+		<PackageVersion Include="O9d.AspNet.FluentValidation" Version="0.1.1" />
+		<PackageVersion Include="RabbitMQ.Client" Version="6.6.0" />
+		<PackageVersion Include="StackExchange.Redis" Version="2.7.4" />
+		<PackageVersion Include="System.Net.Http" Version="4.3.4" />
+		<PackageVersion Include="Yarp.ReverseProxy" Version="2.1.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.App.Ref" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+		<PackageVersion Include="xunit" Version="2.4.2" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
+		<PackageVersion Include="coverlet.collector" Version="6.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.0" />
+	</ItemGroup>
+</Project>
