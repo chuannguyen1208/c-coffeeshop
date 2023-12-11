@@ -10,6 +10,8 @@ namespace CShop.UseCases.Dtos;
 public class OrderDto
 {
     public int Id { get; set; }
+    public OrderStatus Status { get; set; }
+    public string? FailedReason { get; set; }
     public List<OrderItemDto> OrderItems { get; set; } = [];
 }
 

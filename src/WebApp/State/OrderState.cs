@@ -1,4 +1,5 @@
 ﻿using CShop.UseCases.Dtos;
+using CShop.UseCases.Entities;
 using CShop.UseCases.Messaging.Messages;
 using CShop.UseCases.Services;
 using MassTransit;
@@ -9,6 +10,8 @@ namespace WebApp.State;
 
 public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService) : IConsumer<OrderUpdated>
 {
+    private Guid Id { get; init; } = Guid.NewGuid();
+
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
     public List<OrderItemDto> OrderItems { get; set; } = [];
@@ -22,7 +25,8 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
         }
     }
 
-    private int orderId = 0;
+    public OrderStatus OrderStatus { get; private set; }
+    public int OrderId { get; private set; }
 
     public async Task GetItems()
     {
@@ -33,11 +37,14 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
     {
         var model = new OrderDto
         {
-            Id = orderId,
+            Id = OrderId,
             OrderItems = OrderItems
         };
 
-        await orderService.UpsertOrder(model);
+        var order = await orderService.UpsertOrder(model);
+        OrderId = order.Id;
+        OrderStatus = order.Status;
+
         await toastService.ToastSuccess("Order submitted.");
     }
 
@@ -96,7 +103,15 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
     {
         var order = context.Message.Order;
         Log.Information($"Order {order.Id} status changed {order.Status}");
+        Log.Information($"State orderId: {OrderId}");
+        Log.Information($"State Id: {Id}");
 
-        await Task.CompletedTask;
+        if (order.Id != OrderId)
+        {
+            return;
+        }
+
+        OrderStatus = order.Status;
+        await toastService.ToastSuccess("Order status updated.");
     }
 }
