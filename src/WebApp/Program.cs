@@ -9,6 +9,9 @@ using WebApp.Interop;
 using Tools.Messaging;
 using Tools.Logging;
 using System.Reflection;
+using CShop.UseCases.Messages.Publishers;
+using WebApp.Messages.Publishers;
+using WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,8 @@ builder.Services.AddUseCases()
 
 builder.Services.AddScoped<OrderState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
+builder.Services.AddScoped<IOrderPublisher, OrderPublisher>();
+builder.Services.AddSingleton<OrderMessageBridge>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

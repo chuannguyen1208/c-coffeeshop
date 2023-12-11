@@ -3,13 +3,44 @@ using CShop.UseCases.Entities;
 using CShop.UseCases.Services;
 using Serilog;
 using WebApp.Interop;
+using WebApp.Services;
 
 namespace WebApp.State;
 
-public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService)
+public class OrderState
 {
-    private Guid Id { get; init; } = Guid.NewGuid();
+    private readonly IItemService itemService;
+    private readonly IOrderService orderService;
+    private readonly IToastService toastService;
+    private readonly OrderMessageBridge orderMessageBridge;
 
+    public OrderState(
+        IItemService itemService,
+        IOrderService orderService,
+        IToastService toastService,
+        OrderMessageBridge orderMessageBridge)
+    {
+        this.itemService = itemService;
+        this.orderService = orderService;
+        this.toastService = toastService;
+        this.orderMessageBridge = orderMessageBridge;
+        this.orderMessageBridge.OrderUpdated += UpdateOrder;
+        Id = Guid.NewGuid();
+    }
+
+    private void UpdateOrder(Order order)
+    {
+        if (order.Id != OrderId)
+        {
+            return;
+        }
+
+        OrderStatus = order.Status;
+        toastService.ToastSuccess("Order " + OrderStatusString);
+        // NotifyStateChanged();
+    }
+
+    private readonly Guid Id;
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
     public List<OrderItemDto> OrderItems { get; set; } = [];
@@ -25,6 +56,20 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
 
     public OrderStatus OrderStatus { get; private set; }
     public int OrderId { get; private set; }
+    public string OrderStatusString
+    {
+        get
+        {
+            return OrderStatus switch
+            {
+                OrderStatus.Created => "created",
+                OrderStatus.Processing => "processing",
+                OrderStatus.Completed => "completed",
+                OrderStatus.Failed => "failed. Something went wrong!",
+                _ => "creating..."
+            };
+        }
+    }
 
     public async Task GetItems()
     {
@@ -68,7 +113,8 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
         NotifyStateChanged();
     }
 
-    public void MinusQuantity(OrderItemDto item) {
+    public void MinusQuantity(OrderItemDto item)
+    {
         var orderItem = OrderItems.FirstOrDefault(s => s.ItemId == item.ItemId);
         if (orderItem != null)
         {

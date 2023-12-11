@@ -21,8 +21,9 @@ public class Order
 
 public enum OrderStatus
 {
-    Created = 0,
-    Processing = 1,
-    Completed = 2,
-    Failed = 3
+    Undefined = 0,
+    Created = 1,
+    Processing = 2,
+    Completed = 3,
+    Failed = 4
 }

@@ -2,6 +2,7 @@
 using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+using CShop.UseCases.Messages.Publishers;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,11 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Commands;
 public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
 {
-    private class Handler(IRepo<Order> repo, IMapper mapper, IUnitOfWork unitOfWork) : IRequestHandler<UpsertOrderCommand, OrderDto>
+    private class Handler(
+        IRepo<Order> repo, 
+        IMapper mapper, 
+        IUnitOfWork unitOfWork, 
+        IOrderPublisher orderPublisher) : IRequestHandler<UpsertOrderCommand, OrderDto>
     {
         public async Task<OrderDto> Handle(UpsertOrderCommand request, CancellationToken cancellationToken)
         {
@@ -32,7 +37,8 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
                 await repo.UpdateAsync(order, cancellationToken).ConfigureAwait(false);
             }
 
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await orderPublisher.PublishOrderCreated(new Messages.OrderCreated(order)).ConfigureAwait(false);
 
             return mapper.Map<OrderDto>(order);
         }
