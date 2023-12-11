@@ -13,8 +13,5 @@
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Serilog" />
 	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\Tools\Tools.csproj" />
-	</ItemGroup>
 
 </Project>
