@@ -1,14 +1,12 @@
 ﻿using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
-using CShop.UseCases.Messaging.Messages;
 using CShop.UseCases.Services;
-using MassTransit;
 using Serilog;
 using WebApp.Interop;
 
 namespace WebApp.State;
 
-public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService) : IConsumer<OrderUpdated>
+public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService)
 {
     private Guid Id { get; init; } = Guid.NewGuid();
 
@@ -98,20 +96,4 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
     }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
-
-    public async Task Consume(ConsumeContext<OrderUpdated> context)
-    {
-        var order = context.Message.Order;
-        Log.Information($"Order {order.Id} status changed {order.Status}");
-        Log.Information($"State orderId: {OrderId}");
-        Log.Information($"State Id: {Id}");
-
-        if (order.Id != OrderId)
-        {
-            return;
-        }
-
-        OrderStatus = order.Status;
-        await toastService.ToastSuccess("Order status updated.");
-    }
 }
