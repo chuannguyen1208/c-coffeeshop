@@ -1,6 +1,7 @@
 ﻿using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
 using CShop.UseCases.Services;
+using Microsoft.AspNetCore.Components;
 using Serilog;
 using WebApp.Interop;
 using WebApp.Services;
@@ -9,6 +10,7 @@ namespace WebApp.State;
 
 public class OrderState
 {
+    private readonly Guid Id;
     private readonly IItemService itemService;
     private readonly IOrderService orderService;
     private readonly IToastService toastService;
@@ -36,11 +38,9 @@ public class OrderState
         }
 
         OrderStatus = order.Status;
-        toastService.ToastSuccess("Order " + OrderStatusString);
-        // NotifyStateChanged();
+        NotifyStateChanged();
     }
 
-    private readonly Guid Id;
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
     public List<OrderItemDto> OrderItems { get; set; } = [];
@@ -63,7 +63,7 @@ public class OrderState
             return OrderStatus switch
             {
                 OrderStatus.Created => "created",
-                OrderStatus.Processing => "processing",
+                OrderStatus.Processing => "processing...",
                 OrderStatus.Completed => "completed",
                 OrderStatus.Failed => "failed. Something went wrong!",
                 _ => "creating..."
@@ -81,7 +81,8 @@ public class OrderState
         var model = new OrderDto
         {
             Id = OrderId,
-            OrderItems = OrderItems
+            OrderItems = OrderItems,
+            Status = OrderStatus.Created
         };
 
         var order = await orderService.UpsertOrder(model);

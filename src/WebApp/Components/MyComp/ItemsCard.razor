@@ -1,6 +1,7 @@
 ﻿@namespace MyComp
 @implements IDisposable
 @inject OrderState orderState
+@attribute [StreamRendering]
 
 <div class="row">
     <div class="col pt-2">
@@ -74,13 +75,16 @@
                 <div>Total</div>
                 <div>@($"{orderState.TotalPrice + orderState.Tip}$")</div>
             </div>
-            
+
             <div class="row mt-5">
-                <div class="col-12">
-                    <div class="alert alert-info" role="alert">
-                        Order @orderState.OrderStatusString
+                @if (orderState.OrderStatus != CShop.UseCases.Entities.OrderStatus.Undefined)
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            Order @orderState.OrderStatusString
+                        </div>
                     </div>
-                </div>
+                }
                 <div class="col-12">
                     <btn class="btn btn-primary form-control" tabindex="0" @onclick="Submit">Submit</btn>
                 </div>
@@ -95,7 +99,7 @@
 
     protected override void OnInitialized()
     {
-        orderState.OnChange += StateHasChanged;
+        orderState.OnChange += StateHasChangedInvoke;
     }
 
     private void FormatCurrency(ChangeEventArgs e)
@@ -120,6 +124,14 @@
     async Task Submit()
     {
         await orderState.Submit();
+    }
+
+    void StateHasChangedInvoke()
+    {
+        _ = InvokeAsync(() =>
+        {
+             StateHasChanged();
+        });
     }
 
     public void Dispose()
