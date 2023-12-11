@@ -47,7 +47,7 @@ public record UpsertOrderCommandCompleted(Order order) : INotification
     {
         public async Task Handle(UpsertOrderCommandCompleted notification, CancellationToken cancellationToken)
         {
-            var message = new OrderMessage(notification.order);
+            var message = new OrderCreated(notification.order);
             await messageSender.PublishMessageAsync(message, cancellationToken).ConfigureAwait(false);
         }
     }

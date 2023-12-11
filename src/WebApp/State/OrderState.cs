@@ -1,10 +1,13 @@
 ﻿using CShop.UseCases.Dtos;
+using CShop.UseCases.Messaging.Messages;
 using CShop.UseCases.Services;
+using MassTransit;
+using Serilog;
 using WebApp.Interop;
 
 namespace WebApp.State;
 
-public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService)
+public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService) : IConsumer<OrderUpdated>
 {
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
@@ -88,4 +91,12 @@ public class OrderState(IItemService itemService, IOrderService orderService, IT
     }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
+
+    public async Task Consume(ConsumeContext<OrderUpdated> context)
+    {
+        var order = context.Message.Order;
+        Log.Information($"Order {order.Id} status changed {order.Status}");
+
+        await Task.CompletedTask;
+    }
 }

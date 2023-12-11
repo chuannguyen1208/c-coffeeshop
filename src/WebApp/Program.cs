@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddUseCases()
     .AddInfras(builder.Configuration)
     .AddSerilogLogging(builder.Configuration)
-    .AddAsyncProcessing(builder.Configuration, typeof(OrderMessageConsumer).Assembly);
+    .AddAsyncProcessing(builder.Configuration, typeof(OrderCreatedConsumer).Assembly, Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<OrderState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
