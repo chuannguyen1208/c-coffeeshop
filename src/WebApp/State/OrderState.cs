@@ -8,7 +8,7 @@ using WebApp.Services;
 
 namespace WebApp.State;
 
-public class OrderState
+public class OrderState : IDisposable
 {
     private readonly Guid Id;
     private readonly IItemService itemService;
@@ -143,4 +143,11 @@ public class OrderState
     }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
+
+    public void Dispose()
+    {
+        Log.Information("OrderState disposed.");
+        orderMessageBridge.OrderUpdated -= UpdateOrder;
+        GC.SuppressFinalize(this);
+    }
 }
