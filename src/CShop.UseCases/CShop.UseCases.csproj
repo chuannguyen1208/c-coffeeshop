@@ -7,9 +7,14 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="MassTransit" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
 		<PackageReference Include="MediatR" />
+		<PackageReference Include="Serilog" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Tools\Tools.csproj" />
 	</ItemGroup>
 
 </Project>

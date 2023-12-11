@@ -9,18 +9,17 @@ using WebApp.Interop;
 using Tools.Messaging;
 using Tools.Logging;
 using System.Reflection;
+using CShop.UseCases.Messaging.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddUseCases()
     .AddInfras(builder.Configuration)
     .AddSerilogLogging(builder.Configuration)
-    .AddAsyncProcessing(builder.Configuration, Assembly.GetExecutingAssembly());
+    .AddAsyncProcessing(builder.Configuration, typeof(OrderMessageConsumer).Assembly);
 
 builder.Services.AddScoped<OrderState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
-
-builder.Services.AddHostedService<Worker>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
