@@ -6,3 +6,32 @@ services:
     build:
       context: .
       dockerfile: src/WebApp/Dockerfile
+    networks:
+      - my_network
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: mssql
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    networks:
+      - my_network
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: rabbitmq
+    hostname: rmq
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672"  # RabbitMQ management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+

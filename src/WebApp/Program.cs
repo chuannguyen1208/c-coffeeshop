@@ -6,12 +6,21 @@ using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
 using WebApp.State;
 using WebApp.Interop;
+using Tools.Messaging;
+using Tools.Logging;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddUseCases().AddInfras(builder.Configuration);
+builder.Services.AddUseCases()
+    .AddInfras(builder.Configuration)
+    .AddSerilogLogging(builder.Configuration)
+    .AddAsyncProcessing(builder.Configuration, Assembly.GetExecutingAssembly());
+
 builder.Services.AddScoped<OrderState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
+
+builder.Services.AddHostedService<Worker>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -31,6 +40,8 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.ApplyOutboxMigrations();
 
 SeedData(app.Services);
 

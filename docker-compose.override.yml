@@ -6,9 +6,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Default=Server=mssql;Database=cshop;User Id=sa;Password=Pass@word;TrustServerCertificate=true;
+      - RabbitMQSettings__Host=rabbitmq
     ports:
       - "8080"
       - "8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  sqlserver:
+    volumes:
+      - ./.containers/mssql:/var/opt/mssql/data

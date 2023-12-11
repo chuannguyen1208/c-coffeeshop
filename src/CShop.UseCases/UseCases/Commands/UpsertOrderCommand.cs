@@ -39,11 +39,11 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest
     }
 }
 
-public record UpsertOrderCommandCompleted : IRequest
+public record UpsertOrderCommandCompleted : INotification
 {
-    private class Handler : IRequestHandler<UpsertOrderCommandCompleted>
+    private class Handler : INotificationHandler<UpsertOrderCommandCompleted>
     {
-        public async Task Handle(UpsertOrderCommandCompleted request, CancellationToken cancellationToken)
+        public async Task Handle(UpsertOrderCommandCompleted notification, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
         }

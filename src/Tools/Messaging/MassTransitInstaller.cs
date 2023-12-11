@@ -12,7 +12,7 @@ using Tools.Messaging.Messages;
 namespace Tools.Messaging;
 public static class MassTransitInstaller
 {
-    public static IServiceCollection AddAsyncProcessing(this IServiceCollection services, IConfiguration configuration, Assembly[] assembliesWithConsumers)
+    public static IServiceCollection AddAsyncProcessing(this IServiceCollection services, IConfiguration configuration, params Assembly[] assembliesWithConsumers)
     {
         var configData = configuration.GetSection("RabbitMQSettings");
         var brokerSettings = new BrokerSettings();
@@ -31,6 +31,7 @@ public static class MassTransitInstaller
 
             var entryAssembly = Assembly.GetEntryAssembly();
 
+            x.AddConsumers(assembliesWithConsumers);
             x.AddConsumer<MyConsumer>();
             x.AddSagaStateMachines(entryAssembly);
             x.AddSagas(entryAssembly);

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CShop.Infras\CShop.Infras.csproj" />
     <ProjectReference Include="..\CShop.UseCases\CShop.UseCases.csproj" />
+    <ProjectReference Include="..\Tools\Tools.csproj" />
   </ItemGroup>
 
 	<ItemGroup>
