@@ -1,9 +1,10 @@
 ﻿using CShop.UseCases.Dtos;
 using CShop.UseCases.Services;
+using WebApp.Interop;
 
 namespace WebApp.State;
 
-public class OrderState(IItemService itemService, IOrderService orderService)
+public class OrderState(IItemService itemService, IOrderService orderService, IToastService toastService)
 {
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
@@ -34,6 +35,7 @@ public class OrderState(IItemService itemService, IOrderService orderService)
         };
 
         await orderService.UpsertOrder(model);
+        await toastService.ToastSuccess("Order submitted.");
     }
 
     public void AddItem(ItemDto item)
