@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.Messages.Publishers;
 public interface IOrderPublisher
 {
-    Task PublishOrderCreated(OrderCreated orderCreated);
+    Task PublishOrderCreated(OrderSubmitted orderCreated);
     Task PublishOrderUpdated(OrderUpdated orderUpdated);
 }

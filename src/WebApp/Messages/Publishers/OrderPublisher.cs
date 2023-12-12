@@ -6,7 +6,7 @@ namespace WebApp.Messages.Publishers;
 
 internal class OrderPublisher(IMessageSender messageSender) : IOrderPublisher
 {
-    public async Task PublishOrderCreated(OrderCreated orderCreated)
+    public async Task PublishOrderCreated(OrderSubmitted orderCreated)
     {
         await messageSender.PublishMessageAsync(orderCreated).ConfigureAwait(false);
     }

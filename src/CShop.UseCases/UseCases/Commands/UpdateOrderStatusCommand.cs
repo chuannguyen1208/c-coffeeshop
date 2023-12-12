@@ -24,7 +24,7 @@ public record UpdateOrderStatusCommand(int Id, OrderStatus Status, string? Retur
 
             order.Status = request.Status;
 
-            if (order.Status == OrderStatus.Failed)
+            if (order.Status == OrderStatus.Returned)
             {
                 order.FailedReason = request.ReturnMessage;
             }

@@ -7,9 +7,9 @@ using WebApp.Services;
 
 namespace WebApp.Messages.Receivers;
 
-public class OrderCreatedReceiver(IServiceProvider sp) : IConsumer<OrderCreated>
+public class OrderCreatedReceiver(IServiceProvider sp) : IConsumer<OrderSubmitted>
 {
-    public async Task Consume(ConsumeContext<OrderCreated> context)
+    public async Task Consume(ConsumeContext<OrderSubmitted> context)
     {
         using var scope = sp.CreateScope();
         var bridge = scope.ServiceProvider.GetRequiredService<OrderMessageBridge>();

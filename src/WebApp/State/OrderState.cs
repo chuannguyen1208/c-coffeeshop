@@ -65,7 +65,7 @@ public class OrderState : IDisposable
                 OrderStatus.Created => "created",
                 OrderStatus.Processing => "processing...",
                 OrderStatus.Completed => "completed",
-                OrderStatus.Failed => "failed. Something went wrong!",
+                OrderStatus.Returned => "failed. Something went wrong!",
                 _ => "creating..."
             };
         }

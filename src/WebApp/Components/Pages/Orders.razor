@@ -20,7 +20,7 @@
             {
                 <li class="list-group-item mb-2">
                     <div class="row d-flex align-items-center">
-                        <div class="col-2">@order.No</div>
+                        <div class="col-2">@order.Id</div>
                         <div class="col-2 text-center">@order.Status</div>
                         <div class="col text-end">
                             <button class="btn btn-primary btn-sm" @onclick="@(() => kitchenState.PickOrder(order))">Pick</button>
