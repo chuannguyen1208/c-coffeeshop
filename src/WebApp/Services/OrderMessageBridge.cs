@@ -6,6 +6,8 @@ public class OrderMessageBridge
 {
     public readonly Guid Id = Guid.NewGuid();
 
+    public event Action<Order>? OrderCreated;
     public event Action<Order>? OrderUpdated;
     public void Invoke(Order order) => OrderUpdated?.Invoke(order);
+    public void InvokeOrderCreated(Order order) => OrderCreated?.Invoke(order);
 }

@@ -1,24 +1,44 @@
 ﻿@page "/orders"
-@inject IOrderService orderService
+@rendermode InteractiveServer
+@implements IDisposable
+@inject OrderKitchenState kitchenState
+
 
 <PageTitle>Orders</PageTitle>
 
 <div class="row">
-    <div class="col">
+    <div class="col-12">
         <ul class="list-group mt-2">
-            @foreach (var order in orders)
+            @foreach (var order in kitchenState.Orders)
             {
-                <li class="list-group-item mb-2">An item</li>
+                <li class="list-group-item mb-2">
+                    <div class="row">
+                        <div class="col">No: @order.No</div>
+                        <div class="col-2">Status: @(order.Status.ToString().ToLower())</div>
+                    </div>
+                </li>
             }
         </ul>
     </div>
 </div>
 
 @code {
-    private IEnumerable<OrderDto> orders = Enumerable.Empty<OrderDto>();
-
     protected override async Task OnInitializedAsync()
     {
-        orders = await orderService.GetOrders();
+        kitchenState.OnChange += StateHasChangedInvoke;
+        await kitchenState.Init();
+    }
+
+    void StateHasChangedInvoke()
+    {
+        _ = InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        kitchenState.OnChange -= StateHasChangedInvoke;
     }
 }

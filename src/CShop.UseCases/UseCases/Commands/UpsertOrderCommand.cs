@@ -30,6 +30,7 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
 
             if (order.Id == 0)
             {
+                order.GenNo();
                 await repo.CreateAsync(order, cancellationToken).ConfigureAwait(false);
             }
             else

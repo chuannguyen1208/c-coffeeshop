@@ -21,6 +21,7 @@ builder.Services.AddUseCases()
     .AddAsyncProcessing(builder.Configuration, Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<OrderState>();
+builder.Services.AddScoped<OrderKitchenState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
 builder.Services.AddScoped<IOrderPublisher, OrderPublisher>();
 builder.Services.AddSingleton<OrderMessageBridge>();
