@@ -8,6 +8,7 @@ namespace CShop.UseCases.Infras;
 public interface IRepo<TEntity>
     where TEntity : class
 {
+    IQueryable<TEntity> Entities { get; }
     Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken);
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
     Task DeleteAsync(int id, CancellationToken cancellationToken);

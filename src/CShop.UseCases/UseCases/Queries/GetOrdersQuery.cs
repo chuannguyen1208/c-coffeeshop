@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
@@ -16,10 +17,10 @@ public record GetOrdersQuery : IRequest<IEnumerable<OrderDto>>
     {
         public async Task<IEnumerable<OrderDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            var entities = await repo.GetManyAsync(cancellationToken).ConfigureAwait(false);
-            var res = mapper.Map<IEnumerable<OrderDto>>(entities);
+            var queryable = repo.Entities;
+            var res = mapper.ProjectTo<OrderDto>(queryable).ToList();
 
-            return res;
+            return await Task.FromResult(res);
         }
     }
 }

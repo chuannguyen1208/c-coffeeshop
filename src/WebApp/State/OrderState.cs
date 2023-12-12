@@ -88,8 +88,6 @@ public class OrderState : IDisposable
         var order = await orderService.UpsertOrder(model);
         OrderId = order.Id;
         OrderStatus = order.Status;
-
-        await toastService.ToastSuccess("Order submitted.");
     }
 
     public void AddItem(ItemDto item)
