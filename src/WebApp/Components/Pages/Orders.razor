@@ -3,10 +3,16 @@
 
 <PageTitle>Orders</PageTitle>
 
-@foreach (var order in orders)
-{
-    <div>@order.Id - @order.OrderItems.Count</div>
-}
+<div class="row">
+    <div class="col">
+        <ul class="list-group mt-2">
+            @foreach (var order in orders)
+            {
+                <li class="list-group-item mb-2">An item</li>
+            }
+        </ul>
+    </div>
+</div>
 
 @code {
     private IEnumerable<OrderDto> orders = Enumerable.Empty<OrderDto>();

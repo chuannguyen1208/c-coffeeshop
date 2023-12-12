@@ -1,5 +1,6 @@
 ﻿using CShop.Infras.Repo;
 using CShop.UseCases.Infras;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,10 +12,19 @@ public static class DependencyInjection
     {
         services.AddDbContext<DbContext, ApplicationDbContext>(
             options => options.UseLazyLoadingProxies()
-                .UseInMemoryDatabase("cshop"));
+                .UseSqlServer(configuration.GetConnectionString("Default")));
 
         services.AddScoped(typeof(IRepo<>), typeof(GenericRepo<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
+    }
+
+    public static IApplicationBuilder ApplyInfrasMigration(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+        dbContext.Database.Migrate();
+
+        return app;
     }
 }

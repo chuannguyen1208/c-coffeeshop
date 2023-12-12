@@ -7,6 +7,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Default=Server=mssql;Database=cshop;User Id=sa;Password=Pass@word;TrustServerCertificate=true;
+      - ConnectionStrings__Messaging=Server=mssql;Database=messaging;User Id=sa;Password=Pass@word;TrustServerCertificate=true;
       - RabbitMQSettings__Host=rabbitmq
     ports:
       - "8080"

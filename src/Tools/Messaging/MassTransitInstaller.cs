@@ -20,7 +20,7 @@ public static class MassTransitInstaller
 
         services.AddDbContext<RegistrationDbContext>(o =>
         {
-            o.UseSqlServer(configuration.GetConnectionString("Default"));
+            o.UseSqlServer(configuration.GetConnectionString("Messaging"));
         });
 
         services.AddMassTransit(x =>

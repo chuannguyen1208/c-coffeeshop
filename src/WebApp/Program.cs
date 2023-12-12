@@ -45,6 +45,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.ApplyOutboxMigrations();
+app.ApplyInfrasMigration();
 
 SeedData(app.Services);
 
