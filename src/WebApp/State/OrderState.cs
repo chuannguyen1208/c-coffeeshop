@@ -90,6 +90,18 @@ public class OrderState : IDisposable
         OrderStatus = order.Status;
     }
 
+    public async Task RetrieveOrder(int orderId)
+    {
+        var order = await orderService.GetOrder(orderId);
+        if (order is null) return;
+
+        OrderId = order.Id;
+        OrderStatus = order.Status;
+        OrderItems = order.OrderItems;
+
+        NotifyStateChanged();
+    }
+
     public void AddItem(ItemDto item)
     {
         var orderItem = OrderItems.FirstOrDefault(s => s.ItemId == item.Id);
@@ -141,7 +153,6 @@ public class OrderState : IDisposable
     }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
-
     public void Dispose()
     {
         Log.Information("OrderState disposed.");

@@ -85,6 +85,16 @@
                         </div>
                     </div>
                 }
+                <div class="col-12 mb-2">
+                    <div class="row">
+                        <div class="col-4">
+                            <input class="form-control" @bind-value="retrieveOrderId" />
+                        </div>
+                        <div class="col">
+                            <btn class="btn btn-warning form-control" tabindex="0" @onclick="RetrieveOrder">Retrieve Order</btn>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <btn class="btn btn-primary form-control" tabindex="0" @onclick="Submit">Submit</btn>
                 </div>
@@ -96,6 +106,7 @@
 @code {
     private decimal amount;
     private string? formattedAmount;
+    private string? retrieveOrderId;
 
     protected override void OnInitialized()
     {
@@ -121,6 +132,14 @@
         orderState.AddTip(amount);
     }
 
+    async Task RetrieveOrder()
+    {
+        if (int.TryParse(retrieveOrderId, out int orderId))
+        {
+            await orderState.RetrieveOrder(orderId);
+        }
+    }
+
     async Task Submit()
     {
         await orderState.Submit();
@@ -130,7 +149,7 @@
     {
         _ = InvokeAsync(() =>
         {
-             StateHasChanged();
+            StateHasChanged();
         });
     }
 

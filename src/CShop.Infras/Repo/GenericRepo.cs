@@ -39,7 +39,6 @@ internal class GenericRepo<TEntity>(DbContext context) : IRepo<TEntity>
 
     public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        DbSet.Entry(entity).State = EntityState.Modified;
         DbSet.Update(entity);
         await Task.CompletedTask;
     }

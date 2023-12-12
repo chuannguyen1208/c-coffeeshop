@@ -16,7 +16,19 @@ public class Order
 
     public void SetItems(IEnumerable<OrderItem> items)
     {
-        OrderItems = items.ToList();
+        foreach (var item in items)
+        {
+            var existingItem = OrderItems.FirstOrDefault(s => s.Id == item.Id);
+
+            if (existingItem is null)
+            {
+                OrderItems.Add(item);
+            }
+            else
+            {
+                existingItem.Quantity = item.Quantity;
+            }
+        }
     }
 }
 

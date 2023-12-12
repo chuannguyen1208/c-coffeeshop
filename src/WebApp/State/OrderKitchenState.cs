@@ -66,7 +66,7 @@ public class OrderKitchenState : IDisposable
         else
         {
             existingOrder = orderDto;
-            toastService.ToastInfo($"Order {order.Id} re-submitted.");
+            toastService.ToastInfo($"Order {order.Id} resubmitted.");
         }
 
 

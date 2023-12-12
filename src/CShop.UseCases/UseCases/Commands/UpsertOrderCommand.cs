@@ -22,7 +22,6 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
         public async Task<OrderDto> Handle(UpsertOrderCommand request, CancellationToken cancellationToken)
         {
             var order = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
-
             order ??= mapper.Map<Order>(request.Model);
 
             var orderItems = mapper.Map<IEnumerable<OrderItem>>(request.Model.OrderItems);
