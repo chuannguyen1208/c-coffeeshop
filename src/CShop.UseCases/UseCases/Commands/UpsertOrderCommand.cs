@@ -24,7 +24,6 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
             var order = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
 
             order ??= mapper.Map<Order>(request.Model);
-            order.GenNo();
 
             var orderItems = mapper.Map<IEnumerable<OrderItem>>(request.Model.OrderItems);
             order.SetItems(orderItems);

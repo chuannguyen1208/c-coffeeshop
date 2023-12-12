@@ -13,19 +13,10 @@ public class Order
     public virtual ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
     public OrderStatus Status { get; set; }
     public string? FailedReason { get; set; }
-    public string No { get; private set; } = string.Empty;
 
     public void SetItems(IEnumerable<OrderItem> items)
     {
         OrderItems = items.ToList();
-    }
-
-    public void GenNo()
-    {
-        if (!string.IsNullOrEmpty(No)) return;
-
-        var datetime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        No = $"{Id}{datetime}";
     }
 }
 

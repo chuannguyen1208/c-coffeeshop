@@ -23,13 +23,13 @@ public class OrderKitchenState : IDisposable
         this.orderMessageBridge.OrderCreated += OrderCreated;
     }
 
-    public List<OrderDto> Orders { get; private set; } = [];
+    public LinkedList<OrderDto> Orders { get; private set; } = [];
     public event Action? OnChange;
 
     public async Task Init()
     {
         var orders = await orderService.GetOrders();
-        Orders = orders.ToList();
+        Orders = new LinkedList<OrderDto>(orders);
     }
 
     public async Task PickOrder(OrderDto order)
@@ -55,11 +55,22 @@ public class OrderKitchenState : IDisposable
 
     private void OrderCreated(Order order)
     {
+        var existingOrder = Orders.FirstOrDefault(s => s.Id == order.Id);
         var orderDto = mapper.Map<OrderDto>(order);
-        Orders.Add(orderDto);
-        NotifyChanged();
 
-        toastService.ToastInfo("An order created.");
+        if (existingOrder is null)
+        {
+            Orders.AddFirst(orderDto);
+            toastService.ToastInfo("An order created.");
+        }
+        else
+        {
+            existingOrder = orderDto;
+            toastService.ToastInfo($"Order {order.Id} re-submitted.");
+        }
+
+
+        NotifyChanged();
     }
     private void NotifyChanged()
     {
