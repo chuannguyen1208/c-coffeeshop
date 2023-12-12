@@ -26,11 +26,25 @@ public class OrderKitchenState : IDisposable
     public List<OrderDto> Orders { get; private set; } = [];
     public event Action? OnChange;
 
-
     public async Task Init()
     {
         var orders = await orderService.GetOrders();
         Orders = orders.ToList();
+    }
+
+    public async Task PickOrder(OrderDto order)
+    {
+        await orderService.UpdateOrderStatus(order.Id, OrderStatus.Processing);
+    }
+
+    public async Task CompleteOrder(OrderDto order)
+    {
+        await orderService.UpdateOrderStatus(order.Id, OrderStatus.Completed);
+    }
+
+    public async Task ReturnOrder(OrderDto order)
+    {
+        await orderService.UpdateOrderStatus(order.Id, OrderStatus.Failed, "Seed return message");
     }
 
     private void OrderCreated(Order order)
@@ -41,12 +55,10 @@ public class OrderKitchenState : IDisposable
 
         toastService.ToastInfo("An order created.");
     }
-
     private void NotifyChanged()
     {
         OnChange?.Invoke();
     }
-
     public void Dispose()
     {
         orderMessageBridge.OrderCreated -= OrderCreated;

@@ -22,6 +22,8 @@ public class Order
 
     public void GenNo()
     {
+        if (!string.IsNullOrEmpty(No)) return;
+
         var datetime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         No = $"{Id}{datetime}";
     }

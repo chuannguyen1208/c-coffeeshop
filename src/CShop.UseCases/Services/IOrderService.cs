@@ -3,11 +3,6 @@ using CShop.UseCases.Entities;
 using CShop.UseCases.UseCases.Commands;
 using CShop.UseCases.UseCases.Queries;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.Services;
 public interface IOrderService
@@ -16,6 +11,7 @@ public interface IOrderService
     Task DeleteOrder(int id);
     Task<OrderDto> GetOrder(int id);
     Task<IEnumerable<OrderDto>> GetOrders();
+    Task UpdateOrderStatus(int id, OrderStatus status, string? returnMessage = null);
 }
 
 internal class OrderService(IMediator mediator) : IOrderService
@@ -34,6 +30,11 @@ internal class OrderService(IMediator mediator) : IOrderService
     {
         var res = await mediator.Send(new GetOrdersQuery());
         return res;
+    }
+
+    public async Task UpdateOrderStatus(int id, OrderStatus status, string? returnMessage = null)
+    {
+        await mediator.Send(new UpdateOrderStatusCommand(id, status, returnMessage));
     }
 
     public async Task<OrderDto> UpsertOrder(OrderDto model)
