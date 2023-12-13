@@ -31,6 +31,8 @@ builder.Services.AddRazorComponents()
 
 var app = builder.Build();
 
+app.UsePathBase("/c");
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
