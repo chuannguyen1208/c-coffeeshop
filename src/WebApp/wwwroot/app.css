@@ -57,3 +57,8 @@ h1:focus {
 .cursor-pointer {
     cursor: pointer;
 }
+
+*:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}

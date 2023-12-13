@@ -6,7 +6,7 @@
     {
         <div class="col-3 ps-2 pe-0 pt-2">
             <div class="card cursor-pointer" @onclick="() => orderState.AddItem(item)">
-                <img src="@(item.Img ?? "img/coffee.jpg")" class="card-img-top" alt="...">
+                <img src="@(item.Img ?? "img/coffee.jpg")" height="120" class="card-img-top" style="object-fit: contain" alt="...">
                 <div class="card-body p-2 d-flex justify-content-between">
                     <div>@item.Name</div>
                     <div>@($"{item.Price}$")</div>
