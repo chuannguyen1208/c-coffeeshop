@@ -10,13 +10,12 @@ internal class FileUploader(IHostEnvironment env) : IFileUploader
     public async Task<string> UploadFile(IBrowserFile file, string fileName)
     {
         var trustedFileNameForFileStorage = $"{fileName}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{Path.GetExtension(file.Name)}";
-        var path = Path.Combine(env.ContentRootPath,
-                "wwwroot", "img",
-                trustedFileNameForFileStorage);
+        var returnFilePath = Path.Combine("img", trustedFileNameForFileStorage);
+        var path = Path.Combine(env.ContentRootPath, "wwwroot", returnFilePath);
 
         await using FileStream fs = new(path, FileMode.Create);
         await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
 
-        return path;
+        return returnFilePath;
     }
 }
