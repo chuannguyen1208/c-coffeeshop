@@ -26,7 +26,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Img</label>
-                        <InputFile class="form-control" OnChange="OnFileInput" />
+                        <InputFile class="form-control" accept="image/*" OnChange="OnFileInput" />
                     </div>
                     <div class="mb-3"></div>
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -50,9 +50,18 @@
         }
     }
 
-    void OnFileInput(InputFileChangeEventArgs e)
+    async Task OnFileInput(InputFileChangeEventArgs e)
     {
-        file = e.File;
+        if (e.FileCount > 0)
+        {
+            if (!e.File.ContentType.StartsWith("image"))
+            {
+                await toast.ToastError("File selected must be image format.");
+                return;
+            }
+
+            file = e.File;
+        }
     }
 
     async Task Save()
