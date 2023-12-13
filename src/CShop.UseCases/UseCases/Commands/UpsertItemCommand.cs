@@ -18,7 +18,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
     {
         public async Task Handle(UpsertItemCommand request, CancellationToken cancellationToken)
         {
-            string? filePath;
+            string? filePath = null;
 
             if (request.File != null)
             {
@@ -30,6 +30,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
             if (item is null)
             {
                 item = mapper.Map<Item>(request.Model);
+                item.Img = filePath;
                 await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
             }
             else
@@ -37,6 +38,12 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
                 item.Name = request.Model.Name;
                 item.Price = request.Model.Price;
                 item.Quantity = request.Model.Quantity;
+
+                if (filePath != null)
+                {
+                    item.Img = filePath;
+                }
+
                 await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
             }
           

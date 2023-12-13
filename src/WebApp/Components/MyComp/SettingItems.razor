@@ -12,7 +12,7 @@
             <li class="list-group-item mb-1">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <img src="img/coffee.jpg" width="35" />
+                        <img src="@(item.Img ?? "img/coffee.jpg")" width="35" />
                         @item.Name - @($"{item.Price}$")
                     </div>
                     <div>
