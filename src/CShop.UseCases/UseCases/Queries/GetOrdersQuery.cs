@@ -17,7 +17,7 @@ public record GetOrdersQuery : IRequest<IEnumerable<OrderDto>>
     {
         public async Task<IEnumerable<OrderDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
-            var queryable = repo.Entities;
+            var queryable = repo.Entities.OrderByDescending(s => s.Id);
             var res = mapper.ProjectTo<OrderDto>(queryable).ToList();
 
             return await Task.FromResult(res);
