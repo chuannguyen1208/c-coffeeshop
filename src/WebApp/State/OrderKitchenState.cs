@@ -23,13 +23,32 @@ public class OrderKitchenState : IDisposable
         this.orderMessageBridge.OrderCreated += OrderCreated;
     }
 
-    public LinkedList<OrderDto> Orders { get; private set; } = [];
     public event Action? OnChange;
+    public LinkedList<OrderDto> Orders { get; private set; } = [];
+    public Dictionary<int, OrderStatus> OrderStatuses { get; private set; } = [];
 
     public async Task Init()
     {
         var orders = await orderService.GetOrders();
         Orders = new LinkedList<OrderDto>(orders);
+    }
+
+    public void ChangeOrderStatus(int orderId, OrderStatus status)
+    {
+        OrderStatuses[orderId] = status;
+    }
+
+    public async Task SaveOrderStatus(OrderDto order)
+    {
+        var currentStatus = order.Status;
+        var status = OrderStatuses[order.Id];
+        
+        if (currentStatus == status) return;
+
+        await orderService.UpdateOrderStatus(order.Id, status);
+        order.Status = status;
+
+        await toastService.ToastSuccess("Status changed.");
     }
 
     private void OrderCreated(Order order)

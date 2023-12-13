@@ -20,7 +20,7 @@
             @foreach (var order in kitchenState.Orders)
             {
                 <li class="list-group-item mb-2">
-                    <div class="row d-flex align-items-center">
+                    <div class="row d-flex">
                         <div class="col-2">@order.Id</div>
                         <div class="col-2 text-center @StatusColor(order)">
                             <span class="px-4 py-1 border border-1 rounded-pill">@order.Status</span>
@@ -28,7 +28,25 @@
                         <div class="col text-end">
                             @if (ShowChangeStatusBtn(order))
                             {
-                                <button class="btn btn-sm btn-outline-primary">Change Status</button>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" href="#@($"changeStatus-{order.Id}")">Change Status</button>
+                                <div class="row mt-1">
+                                    <div class="col-6"></div>
+                                    <div class="col">
+                                        <div class="collapse multi-collapse" id="@($"changeStatus-{order.Id}")">
+                                            <div class="card card-body">
+                                                <div class="mb-2">
+                                                    <select class="form-select" size="4" aria-label="Default select example" @onchange="e => ChangeStatus(e, order)">
+                                                        @foreach (var status in Statuses)
+                                                        {
+                                                            <option value="@status">@status</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-primary" @onclick="() => SaveStatus(order)">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                             else
                             {
@@ -43,10 +61,26 @@
 </div>
 
 @code {
+    IEnumerable<OrderStatus> Statuses = Enum.GetValues<OrderStatus>().Where(s => s != OrderStatus.Undefined);
+
     protected override async Task OnInitializedAsync()
     {
         kitchenState.OnChange += StateHasChangedInvoke;
         await kitchenState.Init();
+    }
+
+    void ChangeStatus(ChangeEventArgs e, OrderDto order)
+    {
+        var statusString = (string)e.Value!;
+        if (Enum.TryParse<OrderStatus>(statusString, out var status))
+        {
+            kitchenState.ChangeOrderStatus(order.Id, status);
+        }
+    }
+
+    async Task SaveStatus(OrderDto order)
+    {
+        await kitchenState.SaveOrderStatus(order);
     }
 
     bool ShowChangeStatusBtn(OrderDto order) => order.Status != OrderStatus.Completed && order.Status != OrderStatus.Returned;
