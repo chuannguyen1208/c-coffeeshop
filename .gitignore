@@ -815,3 +815,5 @@ fabric.properties
 
 *.db
 *.db-*
+
+/src/WebApp/wwwroot/img/

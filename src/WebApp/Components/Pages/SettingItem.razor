@@ -43,7 +43,14 @@
 
     async Task Save()
     {
-        await itemService.UpsertItem(model, file);
-        await toast.ToastSuccess("Item saved.");
+        try
+        {
+            await itemService.UpsertItem(model, file);
+            await toast.ToastSuccess("Item saved.");
+        }
+        catch (Exception ex)
+        {
+            await toast.ToastError(ex.Message);
+        }
     }
 }

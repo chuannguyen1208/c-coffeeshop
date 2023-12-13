@@ -22,7 +22,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
 
             if (request.File != null)
             {
-                filePath = await fileUploader.UploadFile(request.File, request.Model.Name);
+                filePath = await fileUploader.UploadFile(request.File, $"item-{request.Model.Name.ToLower()}");
             }
 
             var item = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
@@ -31,14 +31,15 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
             {
                 item = mapper.Map<Item>(request.Model);
                 await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
-
-                return;
             }
-
-            item.Name = request.Model.Name;
-            item.Price = request.Model.Price;
-            item.Quantity = request.Model.Quantity;
-            await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
+            else
+            {
+                item.Name = request.Model.Name;
+                item.Price = request.Model.Price;
+                item.Quantity = request.Model.Quantity;
+                await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
+            }
+          
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
     }
