@@ -42,6 +42,14 @@
     ItemDto model = new ItemDto { Name = "" };
     IBrowserFile? file;
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            model = await itemService.GetItem(Id);
+        }
+    }
+
     void OnFileInput(InputFileChangeEventArgs e)
     {
         file = e.File;
