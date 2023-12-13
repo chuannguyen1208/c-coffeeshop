@@ -1,4 +1,5 @@
-﻿@page "/orders"
+﻿@using CShop.UseCases.Entities
+@page "/orders"
 @rendermode InteractiveServer
 @implements IDisposable
 @inject OrderKitchenState kitchenState
@@ -21,11 +22,18 @@
                 <li class="list-group-item mb-2">
                     <div class="row d-flex align-items-center">
                         <div class="col-2">@order.Id</div>
-                        <div class="col-2 text-center">@order.Status</div>
+                        <div class="col-2 text-center @StatusColor(order)">
+                            <span class="px-4 py-1 border border-1 rounded-pill">@order.Status</span>
+                        </div>
                         <div class="col text-end">
-                            <button class="btn btn-primary btn-sm" @onclick="@(() => kitchenState.PickOrder(order))">Pick</button>
-                            <button class="btn btn-success btn-sm" @onclick="@(() => kitchenState.CompleteOrder(order))">Complete</button>
-                            <button class="btn btn-secondary btn-sm" @onclick="@(() => kitchenState.ReturnOrder(order))">Return</button>
+                            @if (ShowChangeStatusBtn(order))
+                            {
+                                <button class="btn btn-sm btn-outline-primary">Change Status</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-outline-primary">Re-open</button>
+                            }
                         </div>
                     </div>
                 </li>
@@ -41,13 +49,15 @@
         await kitchenState.Init();
     }
 
-    string BackgroundStatus(OrderDto order)
+    bool ShowChangeStatusBtn(OrderDto order) => order.Status != OrderStatus.Completed && order.Status != OrderStatus.Returned;
+
+    string StatusColor(OrderDto order)
     {
         return order.Status switch
         {
-            CShop.UseCases.Entities.OrderStatus.Created => "bg-info",
-            CShop.UseCases.Entities.OrderStatus.Processing => "bg-secondary",
-            CShop.UseCases.Entities.OrderStatus.Completed => "bg-success",
+            CShop.UseCases.Entities.OrderStatus.Created => "text-info",
+            CShop.UseCases.Entities.OrderStatus.Processing => "text-secondary",
+            CShop.UseCases.Entities.OrderStatus.Completed => "text-success",
             _ => ""
         };
     }

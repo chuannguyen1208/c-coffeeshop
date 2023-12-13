@@ -32,27 +32,6 @@ public class OrderKitchenState : IDisposable
         Orders = new LinkedList<OrderDto>(orders);
     }
 
-    public async Task PickOrder(OrderDto order)
-    {
-        order.Status = OrderStatus.Processing;
-        await orderService.UpdateOrderStatus(order.Id, OrderStatus.Processing);
-        await toastService.ToastSuccess("Order picked.");
-    }
-
-    public async Task CompleteOrder(OrderDto order)
-    {
-        order.Status = OrderStatus.Completed;
-        await orderService.UpdateOrderStatus(order.Id, OrderStatus.Completed);
-        await toastService.ToastSuccess("Order completed.");
-    }
-
-    public async Task ReturnOrder(OrderDto order)
-    {
-        order.Status = OrderStatus.Returned;
-        await orderService.UpdateOrderStatus(order.Id, OrderStatus.Returned, "Seed return message");
-        await toastService.ToastSuccess("Order returned.");
-    }
-
     private void OrderCreated(Order order)
     {
         var existingOrder = Orders.FirstOrDefault(s => s.Id == order.Id);
@@ -68,7 +47,6 @@ public class OrderKitchenState : IDisposable
             existingOrder = orderDto;
             toastService.ToastInfo($"Order {order.Id} resubmitted.");
         }
-
 
         NotifyChanged();
     }
