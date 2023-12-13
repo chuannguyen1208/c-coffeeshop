@@ -1,0 +1,49 @@
+﻿@page "/item/{Id:int}"
+@rendermode InteractiveServer
+@inject IItemService itemService
+@inject IToastService toast
+
+<PageTitle>@(Id == 0 ? "New item" : "Item detail")</PageTitle>
+
+<div class="row">
+    <div class="col-5 col-xs-12 p-2">
+        <div class="card">
+            <div class="card-body">
+                <EditForm Model="model" OnSubmit="Save" FormName="item-detail">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" @bind-value="model.Name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input class="form-control" @bind-value="model.Price">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Img</label>
+                        <InputFile class="form-control" OnChange="OnFileInput" />
+                    </div>
+                    <div class="mb-3"></div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    ItemDto model = new ItemDto { Name = "" };
+    IBrowserFile? file;
+
+    void OnFileInput(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+    async Task Save()
+    {
+        await itemService.UpsertItem(model, file);
+        await toast.ToastSuccess("Item saved.");
+    }
+}

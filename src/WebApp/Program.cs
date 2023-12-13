@@ -12,6 +12,7 @@ using System.Reflection;
 using CShop.UseCases.Messages.Publishers;
 using WebApp.Messages.Publishers;
 using WebApp.Services;
+using CShop.UseCases.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddScoped<OrderState>();
 builder.Services.AddScoped<OrderKitchenState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
 builder.Services.AddScoped<IOrderPublisher, OrderPublisher>();
+
+builder.Services.AddTransient<IFileUploader, FileUploader>();
+
 builder.Services.AddSingleton<OrderMessageBridge>();
 
 builder.Services.AddRazorComponents()

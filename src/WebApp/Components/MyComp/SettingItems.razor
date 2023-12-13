@@ -1,0 +1,39 @@
+﻿@namespace MyComp
+@rendermode InteractiveServer
+@inject IItemService itemService
+
+<div class="">
+    <div>
+        <a href="item/0" class="btn btn-primary rounded-pill btn-sm">Create Item</a>
+    </div>
+    <ul class="list-group mt-2">
+        @foreach (var item in items)
+        {
+            <li class="list-group-item mb-1">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <img src="img/coffee.jpg" width="35" />
+                        @item.Name - @($"{item.Price}$")
+                    </div>
+                    <div>
+                        <button class="btn btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    IEnumerable<ItemDto> items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await itemService.GetItems();
+    }
+}
