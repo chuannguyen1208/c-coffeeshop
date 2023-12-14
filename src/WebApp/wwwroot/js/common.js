@@ -14,4 +14,9 @@
     }
 }
 
+export const confirmDialog = (message) => {
+    return confirm(message);
+}
+
 window.toast = toast;
+window.confirmDialog = confirmDialog;

@@ -9,7 +9,12 @@ public interface IToastService
     Task ToastError(string message);
 }
 
-public class CommonInterop : IToastService
+public interface ICommonInterop
+{
+    Task<bool> Confirm(string message);
+}
+
+public class CommonInterop : IToastService, ICommonInterop
 {
     private readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
@@ -37,5 +42,13 @@ public class CommonInterop : IToastService
     {
         var module = await moduleTask.Value;
         await module.InvokeVoidAsync("toast", text, type, closeAfterMs);
+    }
+
+    public async Task<bool> Confirm(string message)
+    {
+        var module = await moduleTask.Value;
+        var res = await module.InvokeAsync<bool>("confirmDialog", message);
+
+        return res;
     }
 }

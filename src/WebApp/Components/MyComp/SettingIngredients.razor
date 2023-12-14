@@ -1,5 +1,7 @@
 ﻿@namespace MyComp
 @inject IIngredientService ingredientService
+@inject ICommonInterop commonJs
+@inject IToastService toast
 
 <div class="">
     <div>
@@ -17,7 +19,7 @@
                         <a href="item/@item.Id" class="btn btn-sm">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <button class="btn btn-sm">
+                        <button class="btn btn-sm" @onclick="async () => await DeleteIngredient(item.Id)">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
@@ -31,6 +33,28 @@
     IEnumerable<IngredientDto> items = [];
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    async Task DeleteIngredient(int id)
+    {
+        var confirmed = await commonJs.Confirm("Delete this item?");
+        if (confirmed)
+        {
+            try
+            {
+                await ingredientService.DeleteIngredient(id);
+                await LoadItems();
+            }
+            catch (Exception ex)
+            {
+                await toast.ToastError(ex.Message);
+            }
+        }
+    }
+
+    async Task LoadItems()
     {
         items = await ingredientService.GetIngredients();
     }
