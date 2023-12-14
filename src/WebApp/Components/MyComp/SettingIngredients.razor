@@ -1,0 +1,37 @@
+﻿@namespace MyComp
+@inject IIngredientService ingredientService
+
+<div class="">
+    <div>
+        <a href="ingredient/0" class="btn btn-primary rounded-pill btn-sm">Create Ingredient</a>
+    </div>
+    <ul class="list-group mt-2">
+        @foreach (var item in items)
+        {
+            <li class="list-group-item mb-1">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        @item.Name - @($"{item.StockLevel} {item.StockName}")
+                    </div>
+                    <div>
+                        <a href="item/@item.Id" class="btn btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    IEnumerable<IngredientDto> items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ingredientService.GetIngredients();
+    }
+}

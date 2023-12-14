@@ -1,0 +1,59 @@
+﻿@page "/ingredient/{Id:int}"
+@rendermode InteractiveServer
+@inject IIngredientService ingredientService
+@inject IToastService toast
+@inject NavigationManager nav
+
+<PageTitle>@(Id == 0 ? "New ingredient" : "Ingredient detail")</PageTitle>
+
+<div class="row">
+    <div class="col-5 col-xs-12 p-2">
+        <div class="card">
+            <div class="card-body">
+                <EditForm Model="model" OnSubmit="Save" FormName="ingredient-detail">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" @bind-value="model.Name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stock Level</label>
+                        <input class="form-control" @bind-value="model.StockLevel">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stock Name</label>
+                        <input class="form-control" placeholder="ml, cups,..." @bind-value="model.StockName">
+                    </div>
+                    <div class="mb-3"></div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    IngredientDto model = new IngredientDto { Name = "", StockName = "" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            model = await ingredientService.GetIngredient(Id);
+        }
+    }
+
+    async Task Save()
+    {
+        try
+        {
+            await ingredientService.UpsertIngredient(model);
+            nav.NavigateTo("settings");
+        }
+        catch (Exception ex)
+        {
+            await toast.ToastError(ex.Message);
+        }
+    }
+}
