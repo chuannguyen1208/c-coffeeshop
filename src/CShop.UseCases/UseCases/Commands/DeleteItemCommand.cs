@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Commands;
 internal record DeleteItemCommand(int Id): IRequest
 {
-    private class Handler(IRepo<Item> repo) : IRequestHandler<DeleteItemCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<DeleteItemCommand>
     {
         public async Task Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Item>();
             await repo.DeleteAsync(request.Id, cancellationToken).ConfigureAwait(false);
         }
     }

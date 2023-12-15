@@ -7,8 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.Infras.Repo;
-internal class UnitOfWork(DbContext context) : IUnitOfWork
+internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 {
+    public IRepo<TEntity> GetRepo<TEntity>() where TEntity : class
+    {
+        return new GenericRepo<TEntity>(context);
+    }
+
     public void BeginTransaction()
     {
         context.Database.BeginTransaction();
@@ -32,5 +37,10 @@ internal class UnitOfWork(DbContext context) : IUnitOfWork
     public async Task SaveChangesAsync()
     {
         await context.SaveChangesAsync();
+    }
+
+    public void Dispose()
+    {
+        context.Dispose();
     }
 }

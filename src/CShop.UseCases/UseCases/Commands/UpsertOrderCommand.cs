@@ -14,13 +14,15 @@ namespace CShop.UseCases.UseCases.Commands;
 public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
 {
     private class Handler(
-        IRepo<Order> repo, 
-        IMapper mapper, 
-        IUnitOfWork unitOfWork, 
+        IUnitOfWorkFactory unitOfWorkFactory,
+        IMapper mapper,
         IOrderPublisher orderPublisher) : IRequestHandler<UpsertOrderCommand, OrderDto>
     {
         public async Task<OrderDto> Handle(UpsertOrderCommand request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Order>();
+
             var order = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
             order ??= mapper.Map<Order>(request.Model);
 
@@ -36,7 +38,7 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
                 await repo.UpdateAsync(order, cancellationToken).ConfigureAwait(false);
             }
 
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
             await orderPublisher.PublishOrderCreated(new Messages.OrderSubmitted(order)).ConfigureAwait(false);
 
             return mapper.Map<OrderDto>(order);

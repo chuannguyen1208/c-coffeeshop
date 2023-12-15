@@ -12,10 +12,12 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Commands.Ingredenents;
 public record UpsertIngredientCommand(IngredientDto Model) : IRequest
 {
-    private class Handler(IRepo<Ingredient> repo, IUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<UpsertIngredientCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<UpsertIngredientCommand>
     {
         public async Task Handle(UpsertIngredientCommand request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Ingredient>();
             var model = request.Model;
             Ingredient? entity;
             if (model.Id == 0)
@@ -36,7 +38,7 @@ public record UpsertIngredientCommand(IngredientDto Model) : IRequest
                 await repo.UpdateAsync(entity, cancellationToken).ConfigureAwait(false);
             }
 
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

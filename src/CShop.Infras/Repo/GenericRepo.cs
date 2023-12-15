@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.Infras.Repo;
+
 internal class GenericRepo<TEntity>(DbContext context) : IRepo<TEntity>
     where TEntity : class
 {

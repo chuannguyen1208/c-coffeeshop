@@ -11,10 +11,12 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Commands;
 public record UpdateOrderStatusCommand(int Id, OrderStatus Status, string? ReturnMessage = null) : IRequest
 {
-    private class Handler(IRepo<Order> repo, IUnitOfWork unitOfWork, IOrderPublisher orderPublisher) : IRequestHandler<UpdateOrderStatusCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IOrderPublisher orderPublisher) : IRequestHandler<UpdateOrderStatusCommand>
     {
         public async Task Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Order>();
             var order = await repo.GetAsync(request.Id, cancellationToken).ConfigureAwait(false);
             
             if (order is null)
@@ -30,7 +32,7 @@ public record UpdateOrderStatusCommand(int Id, OrderStatus Status, string? Retur
             }
 
             await repo.UpdateAsync(order, cancellationToken).ConfigureAwait(false);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfwork.SaveChangesAsync();
 
             await orderPublisher.PublishOrderUpdated(new Messages.OrderUpdated(order));
         }

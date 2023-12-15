@@ -10,19 +10,20 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfras(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<DbContext, ApplicationDbContext>(
+        services.AddDbContextFactory<ApplicationDbContext>(
             options => options.UseLazyLoadingProxies()
                 .UseSqlServer(configuration.GetConnectionString("Default")));
 
-        services.AddScoped(typeof(IRepo<>), typeof(GenericRepo<>));
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddTransient<IUnitOfWorkFactory, UnitOfWorkFactory>();
+
         return services;
     }
 
     public static IApplicationBuilder ApplyInfrasMigration(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+        using var dbContext = dbContextFactory.CreateDbContext();
         dbContext.Database.Migrate();
 
         return app;

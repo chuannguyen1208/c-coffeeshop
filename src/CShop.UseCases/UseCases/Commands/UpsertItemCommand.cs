@@ -14,10 +14,13 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Commands;
 public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
 {
-    private class Handler(IRepo<Item> repo, IMapper mapper, IFileUploader fileUploader, IUnitOfWork unitOfWork) : IRequestHandler<UpsertItemCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper, IFileUploader fileUploader) : IRequestHandler<UpsertItemCommand>
     {
         public async Task Handle(UpsertItemCommand request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Item>();
+
             string? filePath = null;
 
             if (request.File != null)
@@ -47,7 +50,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
                 await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
             }
           
-            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

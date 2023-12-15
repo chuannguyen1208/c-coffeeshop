@@ -13,10 +13,12 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Queries;
 public record GetOrdersQuery : IRequest<IEnumerable<OrderDto>>
 {
-    private class Handler(IRepo<Order> repo, IMapper mapper) : IRequestHandler<GetOrdersQuery, IEnumerable<OrderDto>>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetOrdersQuery, IEnumerable<OrderDto>>
     {
         public async Task<IEnumerable<OrderDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Order>();
             var queryable = repo.Entities.OrderByDescending(s => s.Id);
             var res = mapper.ProjectTo<OrderDto>(queryable).ToList();
 

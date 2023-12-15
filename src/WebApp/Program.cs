@@ -55,28 +55,4 @@ app.MapRazorComponents<App>()
 app.ApplyOutboxMigrations();
 app.ApplyInfrasMigration();
 
-SeedData(app.Services);
-
 app.Run();
-
-static void SeedData(IServiceProvider sp)
-{
-    using var scope = sp.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-    if (!db.Items.Any())
-    {
-        db.Items.AddRange(
-            new Item { Name = "Coffee", Price = 3m },
-            new Item { Name = "Latte", Price = 4.5m },
-            new Item { Name = "Capuchino", Price = 5.2m },
-            new Item { Name = "Smoothie", Price = 3.5m },
-            new Item { Name = "Muffin", Price = 3 },
-            new Item { Name = "CakeOp", Price = 2.5m }
-        );
-
-        unitOfWork.SaveChanges();
-    }
-}
-

@@ -12,10 +12,12 @@ using System.Threading.Tasks;
 namespace CShop.UseCases.UseCases.Queries;
 internal record GetIngredientQuery(int Id) : IRequest<IngredientDto>
 {
-    private class Handler(IRepo<Ingredient> repo, IMapper mapper) : IRequestHandler<GetIngredientQuery, IngredientDto>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetIngredientQuery, IngredientDto>
     {
         public async Task<IngredientDto> Handle(GetIngredientQuery request, CancellationToken cancellationToken)
         {
+            using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
+            var repo = unitOfwork.GetRepo<Ingredient>();
             var entity = await repo.GetAsync(request.Id, cancellationToken).ConfigureAwait(false);
             return mapper.Map<IngredientDto>(entity);
         }
