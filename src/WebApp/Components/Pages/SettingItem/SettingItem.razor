@@ -30,7 +30,7 @@
                     <div class="mb-3">
                         <label class="form-label">Ingredients</label>
                         <div>
-                            <SettingItemIngredients></SettingItemIngredients>
+                            <SettingItemIngredients ItemId="Id" @ref="settingItemIngredientsElement"></SettingItemIngredients>
                         </div>
                     </div>
                     <div class="mb-3"></div>
@@ -43,9 +43,12 @@
 </div>
 
 @code {
-    [Parameter] public int Id { get; set; }
     ItemDto model = new ItemDto { Name = "" };
     IBrowserFile? file;
+    SettingItemIngredients settingItemIngredientsElement = default!;
+
+    [Parameter] 
+    public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,7 +76,8 @@
     {
         try
         {
-            await itemService.UpsertItem(model, file);
+            var itemIngredients = settingItemIngredientsElement.itemIngredients;
+            await itemService.UpsertItem(model, file, itemIngredients);
             nav.NavigateTo("settings");
         }
         catch (Exception ex)

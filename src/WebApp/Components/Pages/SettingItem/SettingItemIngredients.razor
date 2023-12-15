@@ -1,4 +1,5 @@
 ﻿@inject IIngredientService ingredientService
+@inject IItemService itemService
 
 @foreach (var itemIngredient in itemIngredients)
 {
@@ -37,6 +38,12 @@
     protected override async Task OnInitializedAsync()
     {
         ingredients = await ingredientService.GetIngredients();
+
+        if (ItemId != 0)
+        {
+            var itemIngredientsEnumerable = await itemService.GetItemsIngredients(ItemId);
+            itemIngredients = itemIngredientsEnumerable.ToList();
+        }
     }
 
     void AddItemIngredient()

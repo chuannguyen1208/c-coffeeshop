@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands;
-public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
+public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<ItemIngredientDto>? ItemIngredients = null) : IRequest
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper, IFileUploader fileUploader) : IRequestHandler<UpsertItemCommand>
     {
@@ -20,6 +20,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Item>();
+            var itemIngredientRepo = unitOfwork.GetRepo<ItemIngredient>();
 
             string? filePath = null;
 
@@ -48,6 +49,27 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
                 }
 
                 await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
+            }
+
+            var itemIngredients = request.ItemIngredients ?? [];
+
+            foreach (var itemIngredientDto in itemIngredients)
+            {
+                var itemIngredient = mapper.Map<ItemIngredient>(itemIngredientDto);
+                
+                if (itemIngredient.ItemId == 0)
+                {
+                    itemIngredient.Item = item;
+                }
+
+                if (itemIngredient.Id == 0)
+                {
+                    await itemIngredientRepo.CreateAsync(itemIngredient, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await itemIngredientRepo.UpdateAsync(itemIngredient, cancellationToken).ConfigureAwait(false);
+                }
             }
           
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
