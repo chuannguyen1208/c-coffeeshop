@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CShop.Infras.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231215040509_AddItemIngredients")]
-    partial class AddItemIngredients
+    [Migration("20231215040917_ItemIngredients")]
+    partial class ItemIngredients
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,18 +80,26 @@ namespace CShop.Infras.Migrations
 
             modelBuilder.Entity("CShop.UseCases.Entities.ItemIngredient", b =>
                 {
-                    b.Property<int>("ItemId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuantityRequired")
                         .HasColumnType("int");
 
-                    b.HasKey("ItemId", "IngredientId");
+                    b.HasKey("Id");
 
                     b.HasIndex("IngredientId");
+
+                    b.HasIndex("ItemId");
 
                     b.ToTable("ItemIngredients");
                 });
