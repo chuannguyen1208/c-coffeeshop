@@ -35,7 +35,7 @@ internal class GenericRepo<TEntity>(DbContext context) : IRepo<TEntity>
 
     public async Task<IEnumerable<TEntity>> GetManyAsync(CancellationToken cancellationToken)
     {
-        return await Task.FromResult(DbSet.AsEnumerable());
+        return await DbSet.ToListAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)

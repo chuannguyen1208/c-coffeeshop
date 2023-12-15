@@ -19,7 +19,9 @@ public record GetOrdersQuery : IRequest<IEnumerable<OrderDto>>
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Order>();
+
             var queryable = repo.Entities.OrderByDescending(s => s.Id);
+
             var res = mapper.ProjectTo<OrderDto>(queryable).ToList();
 
             return await Task.FromResult(res);

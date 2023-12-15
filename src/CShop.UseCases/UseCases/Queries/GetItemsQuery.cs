@@ -18,9 +18,10 @@ public class GetItemsQuery :  IRequest<IEnumerable<ItemDto>>
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Item>();
-            IEnumerable<Item> items = await repo.GetManyAsync(cancellationToken);
-            var dtos = mapper.Map<IEnumerable<ItemDto>>(items);
-            return dtos;
+            var queryable = repo.Entities;
+            var dtos = mapper.ProjectTo<ItemDto>(queryable).ToList();
+
+            return await Task.FromResult(dtos);
         }
     }
 }

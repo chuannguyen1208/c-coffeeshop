@@ -18,6 +18,7 @@ internal class GetIngredientsQuery : IRequest<IEnumerable<IngredientDto>>
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Ingredient>();
+
             var queryable = repo.Entities;
             var res = mapper.ProjectTo<IngredientDto>(queryable).ToList();
             
