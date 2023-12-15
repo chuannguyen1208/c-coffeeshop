@@ -19,10 +19,9 @@
                         <label class="form-label">Price</label>
                         <div class="input-group mb-3">
                             <span class="input-group-text">$</span>
-                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" @bind-value="model.Price">
+                            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" @bind-value="model.Price">
                             <span class="input-group-text">.00</span>
                         </div>
-                        @* <input class="form-control" @bind-value="model.Price"> *@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Img</label>
@@ -30,7 +29,9 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ingredients</label>
-                        <SettingItemIngredients></SettingItemIngredients>
+                        <div>
+                            <SettingItemIngredients></SettingItemIngredients>
+                        </div>
                     </div>
                     <div class="mb-3"></div>
                     <button type="submit" class="btn btn-primary">Submit</button>

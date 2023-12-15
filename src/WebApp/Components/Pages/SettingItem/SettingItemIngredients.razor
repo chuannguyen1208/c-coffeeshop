@@ -1,21 +1,51 @@
 ﻿@inject IIngredientService ingredientService
 
-
 @foreach (var itemIngredient in itemIngredients)
 {
-    <div>Ingredient: @ingredients[itemIngredient.IngredientId]?.Name</div>
+    <div class="row mb-3">
+        <div class="col">
+            <select class="form-select" aria-label="Default select example" place @bind="@itemIngredient.IngredientId">
+                <option selected>Open this select menu</option>
+                @foreach (var ingredient in ingredients)
+                {
+                    <option value="@ingredient.Id" class="p-3">@ingredient.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col">
+            <input class="form-control" type="number" @bind-value="@itemIngredient.QuantityRequired" />
+        </div>
+        <div class="col">
+            <btn class="btn btn-light" @onclick="() => itemIngredients.Remove(itemIngredient)">
+                <i class="bi bi-trash"></i>
+            </btn>
+        </div>
+    </div>
 }
 
-<button class="btn">Add Ingredient</button>
+<button class="btn btn-light btn-sm" @onclick="AddItemIngredient" @onclick:preventDefault>
+    <i class="bi bi-plus-circle"></i>
+</button>
 
 @code {
-    [Parameter] public int ItemId { get; set; }
-    Dictionary<int, IngredientDto> ingredients = [];
-    List<ItemIngredientDto> itemIngredients = [];
+    private IEnumerable<IngredientDto> ingredients = [];
+
+    [Parameter]
+    public int ItemId { get; set; }
+    public List<ItemIngredientDto> itemIngredients = [];
 
     protected override async Task OnInitializedAsync()
     {
-        var ingredientsEnumerable = await ingredientService.GetIngredients();
-        ingredients = ingredientsEnumerable.ToDictionary(s => s.Id);
+        ingredients = await ingredientService.GetIngredients();
+    }
+
+    void AddItemIngredient()
+    {
+        itemIngredients.Add(new ItemIngredientDto
+            {
+                IngredientId = 0,
+                ItemId = ItemId,
+                QuantityRequired = 0
+            });
     }
 }
