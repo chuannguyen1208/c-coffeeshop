@@ -16,7 +16,7 @@
                         @item.Name - @($"{item.StockLevel} {item.StockName}")
                     </div>
                     <div>
-                        <a href="item/@item.Id" class="btn btn-sm">
+                        <a href="ingredient/@item.Id" class="btn btn-sm">
                             <i class="bi bi-pencil"></i>
                         </a>
                         <button class="btn btn-sm" @onclick="async () => await DeleteIngredient(item.Id)">

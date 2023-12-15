@@ -1,0 +1,21 @@
+﻿@inject IIngredientService ingredientService
+
+
+@foreach (var itemIngredient in itemIngredients)
+{
+    <div>Ingredient: @ingredients[itemIngredient.IngredientId]?.Name</div>
+}
+
+<button class="btn">Add Ingredient</button>
+
+@code {
+    [Parameter] public int ItemId { get; set; }
+    Dictionary<int, IngredientDto> ingredients = [];
+    List<ItemIngredientDto> itemIngredients = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var ingredientsEnumerable = await ingredientService.GetIngredients();
+        ingredients = ingredientsEnumerable.ToDictionary(s => s.Id);
+    }
+}
