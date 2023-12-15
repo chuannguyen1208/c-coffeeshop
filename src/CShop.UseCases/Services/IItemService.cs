@@ -19,26 +19,30 @@ public interface IItemService
     Task<IEnumerable<ItemDto>> GetItems();
 }
 
-internal class ItemService(IMediator mediator) : IItemService
+internal class ItemService(IServiceProvider sp) : BaseService(sp), IItemService
 {
     public async Task DeleteItem(int id)
     {
+        var mediator = mediatorModule.Value;
         await mediator.Send(new DeleteItemCommand(id));
     }
 
     public async Task<ItemDto> GetItem(int id)
     {
+        var mediator = mediatorModule.Value;
         return await mediator.Send(new GetItemQuery(id));
     }
 
     public async Task<IEnumerable<ItemDto>> GetItems()
     {
+        var mediator = mediatorModule.Value;
         var res = await mediator.Send(new GetItemsQuery());
         return res;
     }
 
     public async Task UpsertItem(ItemDto model, IBrowserFile? file)
     {
+        var mediator = mediatorModule.Value;
         await mediator.Send(new UpsertItemCommand(model, file));
     }
 }

@@ -17,26 +17,30 @@ public interface IIngredientService
     Task<IngredientDto> GetIngredient(int id);
 }
 
-internal class IngredientService(IMediator mediator) : IIngredientService
+internal class IngredientService(IServiceProvider sp) : BaseService(sp), IIngredientService
 {
     public async Task DeleteIngredient(int id)
     {
+        var mediator = mediatorModule.Value;
         await mediator.Send(new DeleteIngredientCommand(id));
     }
 
     public async Task<IngredientDto> GetIngredient(int id)
     {
+        var mediator = mediatorModule.Value;
         return await mediator.Send(new GetIngredientQuery(id));
     }
 
     public async Task<IEnumerable<IngredientDto>> GetIngredients()
     {
+        var mediator = mediatorModule.Value;
         var res = await mediator.Send(new GetIngredientsQuery());
         return res;
     }
 
     public async Task UpsertIngredient(IngredientDto ingredient)
     {
+        var mediator = mediatorModule.Value;
         await mediator.Send(new UpsertIngredientCommand(ingredient));
     }
 }
