@@ -5,10 +5,10 @@
 <div class="row">
     <div class="col pt-2">
         <div class="card p-2">
-            @if (orderState.OrderItems.Any())
+            @if (orderState.Order.OrderItems.Any())
             {
                 <ul class="list-group">
-                    @foreach (var orderItem in orderState.OrderItems)
+                    @foreach (var orderItem in orderState.Order.OrderItems)
                     {
                         <li class="list-group-item p-2 mb-2 item">
                             <div class="d-flex justify-content-between align-items-center">
@@ -33,7 +33,7 @@
 
             <div class="d-flex justify-content-between mt-2">
                 <div></div>
-                <div>@($"{orderState.TotalPrice}$")</div>
+                <div>@($"{orderState.Order.TotalPrice}$")</div>
             </div>
             <div class="mt-2 p-2 cash">
                 <div class="d-flex justify-content-between align-items-center">
@@ -72,15 +72,15 @@
             </div>
             <div class="d-flex justify-content-between mt-2">
                 <div>Total</div>
-                <div>@($"{orderState.TotalPrice + orderState.Tip}$")</div>
+                <div>@($"{orderState.Order.TotalPrice + orderState.Order.Tip}$")</div>
             </div>
 
             <div class="row mt-5">
-                @if (orderState.OrderStatus != CShop.UseCases.Entities.OrderStatus.Undefined)
+                @if (orderState.Order.Status != CShop.UseCases.Entities.OrderStatus.Undefined)
                 {
                     <div class="col-12">
                         <div class="alert alert-info" role="alert">
-                            Order @orderState.OrderStatusString
+                            Order @orderState.Order.Status
                         </div>
                     </div>
                 }

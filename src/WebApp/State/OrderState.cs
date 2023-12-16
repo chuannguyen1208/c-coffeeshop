@@ -1,4 +1,5 @@
-﻿using CShop.UseCases.Dtos;
+﻿using AutoMapper;
+using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
 using CShop.UseCases.Services;
 using Microsoft.AspNetCore.Components;
@@ -26,141 +27,84 @@ public class OrderState : IDisposable
         this.orderService = orderService;
         this.toastService = toastService;
         this.orderMessageBridge = orderMessageBridge;
-        this.orderMessageBridge.OrderUpdated += UpdateOrder;
+        this.orderMessageBridge.OrderUpdated += OrderUpdated;
         Id = Guid.NewGuid();
     }
 
-    private void UpdateOrder(OrderDto order)
+    private void OrderUpdated(OrderDto order)
     {
-        if (order.Id != OrderId)
+        if (order.Id != Order.Id)
         {
             return;
         }
 
-        OrderStatus = order.Status;
-        ReturnedReason =  order.FailedReason;
-        NotifyStateChanged();
+        Order.Status = order.Status;
+        Order.FailedReason = order.FailedReason;
     }
 
     public event Action? OnChange;
     public IEnumerable<ItemDto> Items { get; set; } = [];
-    public List<OrderItemDto> OrderItems { get; set; } = [];
-    public decimal Tip { get; private set; }
-    public decimal TotalPrice
-    {
-        get
-        {
-            var res = OrderItems.Sum(s => s.Price * s.Quantity);
-            return res;
-        }
-    }
-
-    public OrderStatus OrderStatus { get; private set; }
-    public string? ReturnedReason { get; private set; }
-    public int OrderId { get; private set; }
-    public string OrderStatusString
-    {
-        get
-        {
-            return OrderStatus switch
-            {
-                OrderStatus.Created => "created",
-                OrderStatus.Accepted => "accepted",
-                OrderStatus.Processing => "processing...",
-                OrderStatus.Completed => "completed",
-                OrderStatus.Returned => $"failed. {ReturnedReason ?? "Something went wrong!"}",
-                _ => "creating..."
-            };
-        }
-    }
+    public OrderDto Order { get; set; } = new OrderDto();
 
     public async Task GetItems()
     {
         Items = await itemService.GetItems().ConfigureAwait(false);
     }
 
-    public async Task Submit()
-    {
-        var model = new OrderDto
-        {
-            Id = OrderId,
-            OrderItems = OrderItems,
-            Status = OrderStatus.Created
-        };
-
-        var order = await orderService.UpsertOrder(model);
-        OrderId = order.Id;
-        OrderStatus = order.Status;
-    }
-
-    public async Task RetrieveOrder(int orderId)
-    {
-        var order = await orderService.GetOrder(orderId);
-        if (order is null) return;
-
-        OrderId = order.Id;
-        OrderStatus = order.Status;
-        OrderItems = order.OrderItems;
-        ReturnedReason = order.FailedReason;
-
-        NotifyStateChanged();
-    }
-
     public void AddItem(ItemDto item)
     {
-        var orderItem = OrderItems.FirstOrDefault(s => s.ItemId == item.Id);
-
-        if (orderItem == null)
+        var orderItem = new OrderItemDto
         {
-            OrderItems.Add(new OrderItemDto
-            {
-                Quantity = 1,
-                Name = item.Name,
-                ItemId = item.Id,
-                Price = item.Price,
-            });
-        }
-        else
-        {
-            orderItem.Quantity += 1;
-        }
+            ItemId = item.Id,
+            Name = item.Name,
+            Price = item.Price,
+            Quantity = 1
+        };
 
+        Order.OrderItems.Add(orderItem);
         NotifyStateChanged();
     }
 
     public void MinusQuantity(OrderItemDto item)
     {
-        var orderItem = OrderItems.FirstOrDefault(s => s.ItemId == item.ItemId);
-        if (orderItem != null)
-        {
-            orderItem.Quantity -= 1;
+        item.Quantity -= 1;
 
-            if (orderItem.Quantity <= 0)
-            {
-                OrderItems.Remove(orderItem);
-            }
+        if (item.Quantity <= 0)
+        {
+            Order.OrderItems.Remove(item);
         }
+        NotifyStateChanged();
     }
 
     public void AddQuantity(OrderItemDto item)
     {
-        var orderItem = OrderItems.FirstOrDefault(s => s.ItemId == item.ItemId);
-        if (orderItem != null)
-        {
-            orderItem.Quantity += 1;
-        }
+        item.Quantity += 1;
+        NotifyStateChanged();
     }
 
     public void AddTip(decimal tip)
     {
-        Tip = tip;
+        Order.Tip = tip;
+        NotifyStateChanged();
+    }
+
+    public async Task RetrieveOrder(int orderId)
+    {
+        Order = await orderService.GetOrder(orderId).ConfigureAwait(false);
+        NotifyStateChanged();
+    }
+
+    public async Task Submit()
+    {
+        await orderService.UpsertOrder(Order);
+        await toastService.ToastSuccess("Order submitted.");
+    }
+
+    public void Dispose()
+    {
+        orderMessageBridge.OrderUpdated -= OrderUpdated;
+        GC.SuppressFinalize(this);
     }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
-    public void Dispose()
-    {
-        Log.Information("OrderState disposed.");
-        orderMessageBridge.OrderUpdated -= UpdateOrder;
-        GC.SuppressFinalize(this);
-    }
 }

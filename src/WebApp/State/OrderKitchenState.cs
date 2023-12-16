@@ -11,16 +11,12 @@ public class OrderKitchenState : IDisposable
 {
     private readonly IOrderService orderService;
     private readonly OrderBridge orderMessageBridge;
-    private readonly IMapper mapper;
-    private readonly IToastService toastService;
 
-    public OrderKitchenState(IOrderService orderService, OrderBridge orderMessageBridge, IMapper mapper, IToastService toastService)
+    public OrderKitchenState(IOrderService orderService, OrderBridge orderMessageBridge)
     {
         this.orderService = orderService;
         this.orderMessageBridge = orderMessageBridge;
-        this.mapper = mapper;
-        this.toastService = toastService;
-        this.orderMessageBridge.OrderSubmmitted += OrderCreated;
+        this.orderMessageBridge.OrderSubmmitted += OrderSubmitted;
     }
 
     public event Action? OnChange;
@@ -38,35 +34,37 @@ public class OrderKitchenState : IDisposable
         OrderStatuses[orderId] = status;
     }
 
-    public Task SaveOrderStatus(OrderDto order)
+    public async Task SaveOrderStatus(OrderDto order)
     {
-        throw new NotImplementedException();
+        var orderUpdated = order with
+        {
+            Status = OrderStatuses[order.Id]
+        };
+
+        await orderService.UpsertOrder(orderUpdated).ConfigureAwait(false);
     }
 
-    private void OrderCreated(OrderDto order)
+    private void OrderSubmitted(OrderDto order)
     {
         var existingOrder = Orders.FirstOrDefault(s => s.Id == order.Id);
 
         if (existingOrder is null)
         {
             Orders.AddFirst(order);
-            toastService.ToastInfo("An order created.");
         }
         else
         {
             existingOrder = order;
-            toastService.ToastInfo($"Order {order.Id} resubmitted.");
         }
 
         NotifyChanged();
     }
-    private void NotifyChanged()
-    {
-        OnChange?.Invoke();
-    }
+   
     public void Dispose()
     {
-        orderMessageBridge.OrderSubmmitted -= OrderCreated;
+        orderMessageBridge.OrderSubmmitted -= OrderSubmitted;
         GC.SuppressFinalize(this);
     }
+
+    private void NotifyChanged() => OnChange?.Invoke();
 }
