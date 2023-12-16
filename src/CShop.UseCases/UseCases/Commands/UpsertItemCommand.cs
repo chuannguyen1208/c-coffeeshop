@@ -22,13 +22,13 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             var repo = unitOfwork.GetRepo<Item>();
             var itemIngredientRepo = unitOfwork.GetRepo<ItemIngredient>();
 
-            string? filePath = null;
+            string? img = null;
             string? imgBase64 = null;
 
             if (request.File != null)
             {
                 // filePath = await fileUploader.UploadFile(request.File, $"item-{request.Model.Name.ToLower()}");
-                imgBase64 = await fileUploader.UploadFileBase64(request.File).ConfigureAwait(false);
+                imgBase64 = "data:image/png;base64," + await fileUploader.UploadFileBase64(request.File).ConfigureAwait(false);
             }
 
             var item = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
@@ -36,7 +36,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             if (item is null)
             {
                 item = mapper.Map<Item>(request.Model);
-                item.Img = filePath;
+                item.Img = img;
                 item.ImgBase64 = imgBase64;
                 await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
             }
@@ -46,9 +46,9 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
                 item.Price = request.Model.Price;
                 item.Quantity = request.Model.Quantity;
 
-                if (filePath != null)
+                if (!string.IsNullOrEmpty(img ?? imgBase64))
                 {
-                    item.Img = filePath;
+                    item.Img = img;
                     item.ImgBase64 = imgBase64;
                 }
 
