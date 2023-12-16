@@ -28,8 +28,10 @@ builder.Services.AddScoped<ICommonInterop, CommonInterop>();
 builder.Services.AddScoped<IOrderPublisher, OrderPublisher>();
 
 builder.Services.AddTransient<IFileUploader, FileUploader>();
+builder.Services.AddTransient<ICounterService, CounterService>();
+builder.Services.AddTransient<IKitchenService, KitchenService>();
 
-builder.Services.AddSingleton<OrderMessageBridge>();
+builder.Services.AddSingleton<OrderBridge>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

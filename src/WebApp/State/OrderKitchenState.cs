@@ -10,17 +10,17 @@ namespace WebApp.State;
 public class OrderKitchenState : IDisposable
 {
     private readonly IOrderService orderService;
-    private readonly OrderMessageBridge orderMessageBridge;
+    private readonly OrderBridge orderMessageBridge;
     private readonly IMapper mapper;
     private readonly IToastService toastService;
 
-    public OrderKitchenState(IOrderService orderService, OrderMessageBridge orderMessageBridge, IMapper mapper, IToastService toastService)
+    public OrderKitchenState(IOrderService orderService, OrderBridge orderMessageBridge, IMapper mapper, IToastService toastService)
     {
         this.orderService = orderService;
         this.orderMessageBridge = orderMessageBridge;
         this.mapper = mapper;
         this.toastService = toastService;
-        this.orderMessageBridge.OrderCreated += OrderCreated;
+        this.orderMessageBridge.OrderSubmmitted += OrderCreated;
     }
 
     public event Action? OnChange;
@@ -43,19 +43,18 @@ public class OrderKitchenState : IDisposable
         throw new NotImplementedException();
     }
 
-    private void OrderCreated(Order order)
+    private void OrderCreated(OrderDto order)
     {
         var existingOrder = Orders.FirstOrDefault(s => s.Id == order.Id);
-        var orderDto = mapper.Map<OrderDto>(order);
 
         if (existingOrder is null)
         {
-            Orders.AddFirst(orderDto);
+            Orders.AddFirst(order);
             toastService.ToastInfo("An order created.");
         }
         else
         {
-            existingOrder = orderDto;
+            existingOrder = order;
             toastService.ToastInfo($"Order {order.Id} resubmitted.");
         }
 
@@ -67,7 +66,7 @@ public class OrderKitchenState : IDisposable
     }
     public void Dispose()
     {
-        orderMessageBridge.OrderCreated -= OrderCreated;
+        orderMessageBridge.OrderSubmmitted -= OrderCreated;
         GC.SuppressFinalize(this);
     }
 }

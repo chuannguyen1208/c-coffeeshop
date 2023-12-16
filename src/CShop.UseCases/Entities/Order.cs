@@ -36,7 +36,8 @@ public enum OrderStatus
 {
     Undefined = 0,
     Created = 1,
-    Processing = 2,
-    Completed = 3,
-    Returned = 4
+    Accepted = 2,
+    Processing = 3,
+    Completed = 4,
+    Returned = 5
 }

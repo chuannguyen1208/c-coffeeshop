@@ -43,4 +43,10 @@ internal class GenericRepo<TEntity>(DbContext context) : IRepo<TEntity>
         DbSet.Update(entity);
         await Task.CompletedTask;
     }
+
+    public async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    {
+        DbSet.UpdateRange(entities);
+        await Task.CompletedTask;
+    }
 }

@@ -41,14 +41,14 @@ public class Item
         foreach (var itemIngredient in ItemIngredients)
         {
             var ingredient = ingredientsDictionary[itemIngredient.IngredientId];
-            var stockLevelUpdated = ingredient.StockLevel - itemIngredient.QuantityRequired * quantity;
+            var quantitySufficent = ingredient.StockLevel / itemIngredient.QuantityRequired;
 
-            if (stockLevelUpdated < 0)
+            if (quantitySufficent < quantity)
             {
-                throw new ArgumentException($"Item {Name} quantity insufficent.");
+                throw new ArgumentException($"Quantity insufficent, ingredient {ingredient.Name} is not enough, {quantitySufficent} remaining.");
             }
 
-            ingredient.StockLevel = stockLevelUpdated;
+            ingredient.StockLevel -= itemIngredient.QuantityRequired * quantity;
         }
 
         ingredients = ingredientsDictionary.Select(s => s.Value);

@@ -14,13 +14,13 @@ public class OrderState : IDisposable
     private readonly IItemService itemService;
     private readonly IOrderService orderService;
     private readonly IToastService toastService;
-    private readonly OrderMessageBridge orderMessageBridge;
+    private readonly OrderBridge orderMessageBridge;
 
     public OrderState(
         IItemService itemService,
         IOrderService orderService,
         IToastService toastService,
-        OrderMessageBridge orderMessageBridge)
+        OrderBridge orderMessageBridge)
     {
         this.itemService = itemService;
         this.orderService = orderService;
@@ -30,7 +30,7 @@ public class OrderState : IDisposable
         Id = Guid.NewGuid();
     }
 
-    private void UpdateOrder(Order order)
+    private void UpdateOrder(OrderDto order)
     {
         if (order.Id != OrderId)
         {
@@ -65,6 +65,7 @@ public class OrderState : IDisposable
             return OrderStatus switch
             {
                 OrderStatus.Created => "created",
+                OrderStatus.Accepted => "accepted",
                 OrderStatus.Processing => "processing...",
                 OrderStatus.Completed => "completed",
                 OrderStatus.Returned => $"failed. {ReturnedReason ?? "Something went wrong!"}",

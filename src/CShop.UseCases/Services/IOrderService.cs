@@ -1,8 +1,10 @@
 ﻿using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
+using CShop.UseCases.Infras;
 using CShop.UseCases.UseCases.Commands.Orders;
 using CShop.UseCases.UseCases.Queries.Orders;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CShop.UseCases.Services;
 public interface IOrderService
@@ -13,7 +15,7 @@ public interface IOrderService
     Task<IEnumerable<OrderDto>> GetOrders();
 }
 
-internal class OrderService(IMediator mediator) : IOrderService
+internal class OrderService(IMediator mediator, IServiceProvider sp) : IOrderService
 {
     public async Task DeleteOrder(int id)
     {
