@@ -17,7 +17,9 @@ public class OrderKitchenState : IDisposable
         this.orderService = orderService;
         this.orderMessageBridge = orderMessageBridge;
         this.orderMessageBridge.OrderSubmmitted += OrderSubmitted;
+        this.orderMessageBridge.OrderUpdated += OrderUpdated;
     }
+
 
     public event Action? OnChange;
     public LinkedList<OrderDto> Orders { get; private set; } = [];
@@ -36,15 +38,19 @@ public class OrderKitchenState : IDisposable
 
     public async Task SaveOrderStatus(OrderDto order)
     {
-        var orderUpdated = order with
-        {
-            Status = OrderStatuses[order.Id]
-        };
-
-        await orderService.UpsertOrder(orderUpdated).ConfigureAwait(false);
+        await orderService.UpdateOrderStatus(order.Id, OrderStatuses[order.Id]).ConfigureAwait(false);
     }
 
-    private void OrderSubmitted(OrderDto order)
+    public void Dispose()
+    {
+        orderMessageBridge.OrderSubmmitted -= OrderSubmitted;
+        orderMessageBridge.OrderUpdated -= OrderUpdated;
+        GC.SuppressFinalize(this);
+    }
+
+    private void OrderSubmitted(OrderDto order) => OrderUpdated(order);
+
+    private void OrderUpdated(OrderDto order)
     {
         var existingOrder = Orders.FirstOrDefault(s => s.Id == order.Id);
 
@@ -54,16 +60,10 @@ public class OrderKitchenState : IDisposable
         }
         else
         {
-            existingOrder = order;
+            existingOrder.Status = order.Status;
         }
 
         NotifyChanged();
-    }
-   
-    public void Dispose()
-    {
-        orderMessageBridge.OrderSubmmitted -= OrderSubmitted;
-        GC.SuppressFinalize(this);
     }
 
     private void NotifyChanged() => OnChange?.Invoke();

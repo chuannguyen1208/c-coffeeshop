@@ -13,13 +13,14 @@ public interface IOrderService
     Task DeleteOrder(int id);
     Task<OrderDto> GetOrder(int id);
     Task<IEnumerable<OrderDto>> GetOrders();
+    Task UpdateOrderStatus(int id, OrderStatus status);
 }
 
-internal class OrderService(IMediator mediator, IServiceProvider sp) : IOrderService
+internal class OrderService(IMediator mediator) : IOrderService
 {
     public async Task DeleteOrder(int id)
     {
-        await mediator.Send(new DeleteOrderCommand(id));
+        await mediator.Send(new OrderDeleteCommand(id));
     }
 
     public async Task<OrderDto> GetOrder(int id)
@@ -33,8 +34,13 @@ internal class OrderService(IMediator mediator, IServiceProvider sp) : IOrderSer
         return res;
     }
 
+    public async Task UpdateOrderStatus(int id, OrderStatus status)
+    {
+        await mediator.Send(new OrderUpdateStatusCommand(id, status));
+    }
+
     public async Task<OrderDto> UpsertOrder(OrderDto model)
     {
-        return await mediator.Send(new UpsertOrderCommand(model));
+        return await mediator.Send(new OrderUpsertCommand(model));
     }
 }

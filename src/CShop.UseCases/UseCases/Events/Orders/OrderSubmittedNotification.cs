@@ -1,11 +1,6 @@
 ﻿using CShop.UseCases.Messages;
 using CShop.UseCases.Messages.Publishers;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Events.Orders;
 public record OrderSubmittedNotification(int OrderId) : INotification

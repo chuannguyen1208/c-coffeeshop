@@ -40,6 +40,7 @@ public class OrderState : IDisposable
 
         Order.Status = order.Status;
         Order.FailedReason = order.FailedReason;
+        NotifyStateChanged();
     }
 
     public event Action? OnChange;
@@ -53,15 +54,23 @@ public class OrderState : IDisposable
 
     public void AddItem(ItemDto item)
     {
-        var orderItem = new OrderItemDto
-        {
-            ItemId = item.Id,
-            Name = item.Name,
-            Price = item.Price,
-            Quantity = 1
-        };
+        var orderItem = Order.OrderItems.FirstOrDefault(x => x.ItemId == item.Id);
 
-        Order.OrderItems.Add(orderItem);
+        if (orderItem is null)
+        {
+            Order.OrderItems.Add(new OrderItemDto
+            {
+                ItemId = item.Id,
+                Name = item.Name,
+                Price = item.Price,
+                Quantity = 1
+            });
+        }
+        else
+        {
+            orderItem.Quantity += 1;
+        }
+
         NotifyStateChanged();
     }
 
@@ -96,7 +105,7 @@ public class OrderState : IDisposable
 
     public async Task Submit()
     {
-        await orderService.UpsertOrder(Order);
+        Order = await orderService.UpsertOrder(Order);
         await toastService.ToastSuccess("Order submitted.");
     }
 

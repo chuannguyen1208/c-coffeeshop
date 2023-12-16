@@ -13,11 +13,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands.Orders;
-public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
+public record OrderUpsertCommand(OrderDto Model) : IRequest<OrderDto>
 {
-    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper, IMediator mediator) : IRequestHandler<UpsertOrderCommand, OrderDto>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper, IMediator mediator) : IRequestHandler<OrderUpsertCommand, OrderDto>
     {
-        public async Task<OrderDto> Handle(UpsertOrderCommand request, CancellationToken cancellationToken)
+        public async Task<OrderDto> Handle(OrderUpsertCommand request, CancellationToken cancellationToken)
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Order>();
