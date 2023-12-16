@@ -40,7 +40,7 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
             }
 
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
-            await orderPublisher.PublishOrderCreated(new OrderSubmitted(order.Id)).ConfigureAwait(false);
+            await orderPublisher.PublishOrderSubmitted(new OrderSubmitted(order.Id)).ConfigureAwait(false);
 
             return mapper.Map<OrderDto>(order);
         }
