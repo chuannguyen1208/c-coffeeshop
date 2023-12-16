@@ -1,7 +1,7 @@
 ﻿using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
-using CShop.UseCases.UseCases.Commands;
-using CShop.UseCases.UseCases.Queries;
+using CShop.UseCases.UseCases.Commands.Orders;
+using CShop.UseCases.UseCases.Queries.Orders;
 using MediatR;
 
 namespace CShop.UseCases.Services;

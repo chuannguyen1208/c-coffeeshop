@@ -9,8 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Queries;
-public class GetItemsQuery :  IRequest<IEnumerable<ItemDto>>
+namespace CShop.UseCases.UseCases.Queries.Items;
+public class GetItemsQuery : IRequest<IEnumerable<ItemDto>>
 {
     private class Hanlder(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetItemsQuery, IEnumerable<ItemDto>>
     {

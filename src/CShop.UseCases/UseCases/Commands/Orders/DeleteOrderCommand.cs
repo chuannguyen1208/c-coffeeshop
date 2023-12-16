@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Commands;
-internal record DeleteItemCommand(int Id): IRequest
+namespace CShop.UseCases.UseCases.Commands.Orders;
+public record DeleteOrderCommand(int Id) : IRequest
 {
-    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<DeleteItemCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<DeleteOrderCommand>
     {
-        public async Task Handle(DeleteItemCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
-            var repo = unitOfwork.GetRepo<Item>();
+            var repo = unitOfwork.GetRepo<Order>();
             await repo.DeleteAsync(request.Id, cancellationToken).ConfigureAwait(false);
         }
     }

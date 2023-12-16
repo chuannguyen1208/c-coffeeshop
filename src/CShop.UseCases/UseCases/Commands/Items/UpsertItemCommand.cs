@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Commands;
+namespace CShop.UseCases.UseCases.Commands.Items;
 public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<ItemIngredientDto>? ItemIngredients = null) : IRequest
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper, IFileUploader fileUploader) : IRequestHandler<UpsertItemCommand>
@@ -60,7 +60,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             foreach (var itemIngredientDto in itemIngredients)
             {
                 var itemIngredient = mapper.Map<ItemIngredient>(itemIngredientDto);
-                
+
                 if (itemIngredient.ItemId == 0)
                 {
                     itemIngredient.Item = item;
@@ -75,7 +75,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
                     await itemIngredientRepo.UpdateAsync(itemIngredient, cancellationToken).ConfigureAwait(false);
                 }
             }
-          
+
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
         }
     }

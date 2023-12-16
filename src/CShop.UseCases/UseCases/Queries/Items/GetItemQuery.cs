@@ -9,17 +9,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Queries;
-internal record GetOrderQuery(int Id) : IRequest<OrderDto>
+namespace CShop.UseCases.UseCases.Queries.Items;
+
+internal record GetItemQuery(int Id) : IRequest<ItemDto>
 {
-    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetOrderQuery, OrderDto>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetItemQuery, ItemDto>
     {
-        public async Task<OrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken)
+        public async Task<ItemDto> Handle(GetItemQuery request, CancellationToken cancellationToken)
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
-            var repo = unitOfwork.GetRepo<Order>();
+            var repo = unitOfwork.GetRepo<Item>();
             var entity = await repo.GetAsync(request.Id, cancellationToken).ConfigureAwait(false);
-            var res = mapper.Map<OrderDto>(entity);
+            var res = mapper.Map<ItemDto>(entity);
             return res;
         }
     }

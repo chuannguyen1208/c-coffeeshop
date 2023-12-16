@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Commands;
+namespace CShop.UseCases.UseCases.Commands.Orders;
 public record UpdateOrderStatusCommand(int Id, OrderStatus Status, string? ReturnMessage = null) : IRequest
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IOrderPublisher orderPublisher) : IRequestHandler<UpdateOrderStatusCommand>
@@ -19,7 +19,7 @@ public record UpdateOrderStatusCommand(int Id, OrderStatus Status, string? Retur
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Order>();
             var order = await repo.GetAsync(request.Id, cancellationToken).ConfigureAwait(false);
-            
+
             if (order is null)
             {
                 return;

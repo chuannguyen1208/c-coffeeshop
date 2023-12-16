@@ -1,6 +1,6 @@
 ﻿using CShop.UseCases.Dtos;
-using CShop.UseCases.UseCases.Commands;
-using CShop.UseCases.UseCases.Queries;
+using CShop.UseCases.UseCases.Commands.Items;
+using CShop.UseCases.UseCases.Queries.Items;
 using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 using System;

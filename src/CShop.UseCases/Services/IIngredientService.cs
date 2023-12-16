@@ -1,6 +1,6 @@
 ﻿using CShop.UseCases.Dtos;
 using CShop.UseCases.UseCases.Commands.Ingredenents;
-using CShop.UseCases.UseCases.Queries;
+using CShop.UseCases.UseCases.Queries.Ingredients;
 using MediatR;
 using System;
 using System.Collections.Generic;

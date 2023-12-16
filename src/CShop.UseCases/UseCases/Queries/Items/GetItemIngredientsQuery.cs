@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Queries;
+namespace CShop.UseCases.UseCases.Queries.Items;
 public record GetItemIngredientsQuery(int ItemId) : IRequest<IEnumerable<ItemIngredientDto>>
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetItemIngredientsQuery, IEnumerable<ItemIngredientDto>>

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Queries;
+namespace CShop.UseCases.UseCases.Queries.Orders;
 public record GetOrdersQuery : IRequest<IEnumerable<OrderDto>>
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetOrdersQuery, IEnumerable<OrderDto>>

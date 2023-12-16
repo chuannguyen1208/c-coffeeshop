@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Commands;
+namespace CShop.UseCases.UseCases.Commands.Orders;
 public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
 {
     private class Handler(

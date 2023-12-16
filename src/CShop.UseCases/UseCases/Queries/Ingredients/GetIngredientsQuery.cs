@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CShop.UseCases.UseCases.Queries;
+namespace CShop.UseCases.UseCases.Queries.Ingredients;
 internal class GetIngredientsQuery : IRequest<IEnumerable<IngredientDto>>
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetIngredientsQuery, IEnumerable<IngredientDto>>
@@ -21,7 +21,7 @@ internal class GetIngredientsQuery : IRequest<IEnumerable<IngredientDto>>
 
             var queryable = repo.Entities;
             var res = mapper.ProjectTo<IngredientDto>(queryable).ToList();
-            
+
             return await Task.FromResult(res);
         }
     }
