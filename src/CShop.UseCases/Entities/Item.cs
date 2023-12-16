@@ -13,4 +13,12 @@ public class Item
     public int Quantity { get; set; }
     public string? Img { get; set; }
     public string? ImgBase64 { get; set; }
+
+    public virtual IEnumerable<ItemIngredient> ItemIngredients { get; set; } = [];
+
+    public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
+    {
+
+        return 0;
+    }
 }

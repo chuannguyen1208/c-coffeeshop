@@ -18,10 +18,20 @@ public class GetItemsQuery :  IRequest<IEnumerable<ItemDto>>
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Item>();
-            var queryable = repo.Entities;
-            var dtos = mapper.ProjectTo<ItemDto>(queryable).ToList();
+            var ingredientRepo = unitOfwork.GetRepo<Ingredient>();
 
-            return await Task.FromResult(dtos);
+            var ingredients = await ingredientRepo.GetManyAsync(cancellationToken).ConfigureAwait(false);
+            var res = new List<ItemDto>();
+
+            foreach (var item in repo.Entities.AsEnumerable())
+            {
+                var itemDto = mapper.Map<ItemDto>(item);
+                itemDto.QuantityRemainingEst = item.GetQuantityRemainingEst(ingredients);
+
+                res.Add(itemDto);
+            }
+
+            return res;
         }
     }
 }

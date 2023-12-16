@@ -1,7 +1,6 @@
 ﻿@using WebApp.Components.Pages.Home.Components
 @page "/"
 @rendermode InteractiveServer
-@inject OrderState orderState
 
 <PageTitle>Home</PageTitle>
 
@@ -15,8 +14,4 @@
 </div>
 
 @code {
-    protected override async Task OnInitializedAsync()
-    {
-        await orderState.GetItems();
-    }
 }

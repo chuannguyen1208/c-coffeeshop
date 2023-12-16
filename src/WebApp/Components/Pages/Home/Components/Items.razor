@@ -1,4 +1,5 @@
 ﻿@inject OrderState orderState
+@implements IDisposable
 
 <div class="row">
     @foreach (var item in orderState.Items)
@@ -6,9 +7,14 @@
         <div class="col-3 ps-2 pe-0 pt-2">
             <div class="card cursor-pointer" @onclick="() => orderState.AddItem(item)">
                 <img src="@(item.ImgBase64 ?? item.Img ?? "img/coffee.jpg")" height="120" class="card-img-top" style="object-fit: contain" alt="...">
-                <div class="card-body p-2 d-flex justify-content-between">
-                    <div>@item.Name</div>
-                    <div>@($"{item.Price}$")</div>
+                <div class="card-body p-2">
+                    <div class="d-flex justify-content-between">
+                        <div>@item.Name</div>
+                        <div>@($"{item.Price}$")</div>
+                    </div>
+                    <div>
+                        Quantity remaining est: @item.QuantityRemainingEst
+                    </div>
                 </div>
             </div>
         </div>
@@ -17,4 +23,14 @@
 
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        orderState.OnChange += StateHasChanged;
+        await orderState.GetItems();
+    }
+
+    public void Dispose()
+    {
+        orderState.OnChange -= StateHasChanged;
+    }
 }
