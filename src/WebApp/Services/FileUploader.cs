@@ -18,4 +18,11 @@ internal class FileUploader(IHostEnvironment env) : IFileUploader
 
         return returnFilePath;
     }
+
+    public async Task<string> UploadFileBase64(IBrowserFile file)
+    {
+        using var ms = new MemoryStream();
+        await file.OpenReadStream().CopyToAsync(ms);
+        return Convert.ToBase64String(ms.ToArray());
+    }
 }

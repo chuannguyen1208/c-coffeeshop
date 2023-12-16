@@ -23,10 +23,12 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             var itemIngredientRepo = unitOfwork.GetRepo<ItemIngredient>();
 
             string? filePath = null;
+            string? imgBase64 = null;
 
             if (request.File != null)
             {
-                filePath = await fileUploader.UploadFile(request.File, $"item-{request.Model.Name.ToLower()}");
+                // filePath = await fileUploader.UploadFile(request.File, $"item-{request.Model.Name.ToLower()}");
+                imgBase64 = await fileUploader.UploadFileBase64(request.File).ConfigureAwait(false);
             }
 
             var item = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
@@ -35,6 +37,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             {
                 item = mapper.Map<Item>(request.Model);
                 item.Img = filePath;
+                item.ImgBase64 = imgBase64;
                 await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
             }
             else
@@ -46,6 +49,7 @@ public record UpsertItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
                 if (filePath != null)
                 {
                     item.Img = filePath;
+                    item.ImgBase64 = imgBase64;
                 }
 
                 await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
