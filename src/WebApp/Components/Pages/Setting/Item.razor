@@ -1,4 +1,5 @@
-﻿@page "/item/{Id:int}"
+﻿@using WebApp.Components.Pages.Setting.Components.Item
+@page "/item/{Id:int}"
 @rendermode InteractiveServer
 @inject IItemService itemService
 @inject IToastService toast
@@ -30,7 +31,7 @@
                     <div class="mb-3">
                         <label class="form-label">Ingredients</label>
                         <div>
-                            <SettingItemIngredients ItemId="Id" @ref="settingItemIngredientsElement"></SettingItemIngredients>
+                            <ItemIngredients ItemId="Id" @ref="settingItemIngredientsElement"></ItemIngredients>
                         </div>
                     </div>
                     <div class="mb-3"></div>
@@ -45,7 +46,7 @@
 @code {
     ItemDto model = new ItemDto { Name = "" };
     IBrowserFile? file;
-    SettingItemIngredients settingItemIngredientsElement = default!;
+    ItemIngredients settingItemIngredientsElement = default!;
 
     [Parameter] 
     public int Id { get; set; }
