@@ -4,7 +4,7 @@
 @foreach (var itemIngredient in itemIngredients)
 {
     <div class="row mb-3">
-        <div class="col">
+        <div class="col-6">
             <select class="form-select" aria-label="Default select example" place @bind="@itemIngredient.IngredientId">
                 <option selected>Open this select menu</option>
                 @foreach (var ingredient in ingredients)
@@ -14,7 +14,7 @@
             </select>
         </div>
         <div class="col">
-            <input class="form-control" type="number" @bind-value="@itemIngredient.QuantityRequired" />
+            <input class="form-control" type="text" @bind-value="@itemIngredient.QuantityRequired" />
         </div>
         <div class="col">
             <btn class="btn btn-light" @onclick="() => itemIngredients.Remove(itemIngredient)">
