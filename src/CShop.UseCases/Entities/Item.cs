@@ -33,4 +33,24 @@ public class Item
 
         return minQuantity;
     }
+
+    public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
+    {
+        var ingredientsDictionary = ingredients.ToDictionary(s => s.Id);
+
+        foreach (var itemIngredient in ItemIngredients)
+        {
+            var ingredient = ingredientsDictionary[itemIngredient.IngredientId];
+            var stockLevelUpdated = ingredient.StockLevel - itemIngredient.QuantityRequired * quantity;
+
+            if (stockLevelUpdated < 0)
+            {
+                throw new ArgumentException($"Item {Name} quantity insufficent.");
+            }
+
+            ingredient.StockLevel = stockLevelUpdated;
+        }
+
+        ingredients = ingredientsDictionary.Select(s => s.Value);
+    }
 }

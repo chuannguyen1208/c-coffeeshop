@@ -6,4 +6,4 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CShop.UseCases.Messages;
-public record OrderSubmitted(Order Order);
+public record OrderSubmitted(int OrderId);

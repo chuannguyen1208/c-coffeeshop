@@ -2,6 +2,7 @@
 using CShop.UseCases.Dtos;
 using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+using CShop.UseCases.Messages;
 using CShop.UseCases.Messages.Publishers;
 using MediatR;
 using System;
@@ -39,7 +40,7 @@ public record UpsertOrderCommand(OrderDto Model) : IRequest<OrderDto>
             }
 
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
-            await orderPublisher.PublishOrderCreated(new Messages.OrderSubmitted(order)).ConfigureAwait(false);
+            await orderPublisher.PublishOrderCreated(new OrderSubmitted(order.Id)).ConfigureAwait(false);
 
             return mapper.Map<OrderDto>(order);
         }

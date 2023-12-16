@@ -1,5 +1,6 @@
 ﻿using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+using CShop.UseCases.Messages;
 using CShop.UseCases.Messages.Publishers;
 using MediatR;
 using System;
@@ -34,7 +35,7 @@ public record UpdateOrderStatusCommand(int Id, OrderStatus Status, string? Retur
             await repo.UpdateAsync(order, cancellationToken).ConfigureAwait(false);
             await unitOfwork.SaveChangesAsync();
 
-            await orderPublisher.PublishOrderUpdated(new Messages.OrderUpdated(order));
+            await orderPublisher.PublishOrderUpdated(new OrderUpdated(order.Id));
         }
     }
 }
