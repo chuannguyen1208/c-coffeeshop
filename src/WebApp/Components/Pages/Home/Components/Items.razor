@@ -25,12 +25,21 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        orderState.OnChange += StateHasChanged;
+        orderState.OnChange += StateHasChangedInvoke;
         await orderState.GetItems();
+    }
+
+
+    void StateHasChangedInvoke()
+    {
+        _ = InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
     }
 
     public void Dispose()
     {
-        orderState.OnChange -= StateHasChanged;
+        orderState.OnChange -= StateHasChangedInvoke;
     }
 }

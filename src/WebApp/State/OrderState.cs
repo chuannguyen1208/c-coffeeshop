@@ -38,6 +38,7 @@ public class OrderState : IDisposable
         }
 
         OrderStatus = order.Status;
+        ReturnedReason =  order.FailedReason;
         NotifyStateChanged();
     }
 
@@ -55,6 +56,7 @@ public class OrderState : IDisposable
     }
 
     public OrderStatus OrderStatus { get; private set; }
+    public string? ReturnedReason { get; private set; }
     public int OrderId { get; private set; }
     public string OrderStatusString
     {
@@ -65,7 +67,7 @@ public class OrderState : IDisposable
                 OrderStatus.Created => "created",
                 OrderStatus.Processing => "processing...",
                 OrderStatus.Completed => "completed",
-                OrderStatus.Returned => "failed. Something went wrong!",
+                OrderStatus.Returned => $"failed. {ReturnedReason ?? "Something went wrong!"}",
                 _ => "creating..."
             };
         }
@@ -98,6 +100,7 @@ public class OrderState : IDisposable
         OrderId = order.Id;
         OrderStatus = order.Status;
         OrderItems = order.OrderItems;
+        ReturnedReason = order.FailedReason;
 
         NotifyStateChanged();
     }
