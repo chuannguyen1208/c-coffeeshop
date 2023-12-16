@@ -5,8 +5,6 @@ namespace WebApp.Services;
 
 public class OrderBridge
 {
-    public event Action<OrderDto>? OrderSubmmitted;
-    public event Action<OrderDto>? OrderUpdated;
-    public void InvokeOrderUpdated(OrderDto order) => OrderUpdated?.Invoke(order);
-    public void InvokeOrderSubmmited(OrderDto order) => OrderSubmmitted?.Invoke(order);
+    public event Func<OrderDto, Task>? OrderUpdated;
+    public Task? InvokeOrderUpdated(OrderDto order) => OrderUpdated?.Invoke(order);
 }

@@ -31,7 +31,7 @@ public class OrderState : IDisposable
         Id = Guid.NewGuid();
     }
 
-    private void OrderUpdated(OrderDto order)
+    private async Task OrderUpdated(OrderDto order)
     {
         if (order.Id != Order.Id)
         {
@@ -40,6 +40,11 @@ public class OrderState : IDisposable
 
         Order.Status = order.Status;
         Order.FailedReason = order.FailedReason;
+
+        if (Order.Status == OrderStatus.Accepted)
+        {
+            await GetItems();
+        }
         NotifyStateChanged();
     }
 

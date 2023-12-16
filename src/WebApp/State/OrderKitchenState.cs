@@ -16,7 +16,6 @@ public class OrderKitchenState : IDisposable
     {
         this.orderService = orderService;
         this.orderMessageBridge = orderMessageBridge;
-        this.orderMessageBridge.OrderSubmmitted += OrderSubmitted;
         this.orderMessageBridge.OrderUpdated += OrderUpdated;
     }
 
@@ -43,14 +42,11 @@ public class OrderKitchenState : IDisposable
 
     public void Dispose()
     {
-        orderMessageBridge.OrderSubmmitted -= OrderSubmitted;
         orderMessageBridge.OrderUpdated -= OrderUpdated;
         GC.SuppressFinalize(this);
     }
 
-    private void OrderSubmitted(OrderDto order) => OrderUpdated(order);
-
-    private void OrderUpdated(OrderDto order)
+    private async Task OrderUpdated(OrderDto order)
     {
         var existingOrder = Orders.FirstOrDefault(s => s.Id == order.Id);
 
@@ -64,6 +60,8 @@ public class OrderKitchenState : IDisposable
         }
 
         NotifyChanged();
+
+        await Task.CompletedTask;
     }
 
     private void NotifyChanged() => OnChange?.Invoke();
