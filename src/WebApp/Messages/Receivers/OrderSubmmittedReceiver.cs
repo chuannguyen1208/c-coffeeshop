@@ -9,7 +9,7 @@ using WebApp.Services;
 
 namespace WebApp.Messages.Receivers;
 
-public class OrderCreatedReceiver(IServiceProvider sp) : IConsumer<OrderSubmitted>
+public class OrderSubmmittedReceiver(IServiceProvider sp) : IConsumer<OrderSubmitted>
 {
     public async Task Consume(ConsumeContext<OrderSubmitted> context)
     {
@@ -27,7 +27,7 @@ public class OrderCreatedReceiver(IServiceProvider sp) : IConsumer<OrderSubmitte
         }
     }
 
-    private async Task<Order> CheckOrderItemsQuantity(IServiceScope scope, int orderId)
+    private static async Task<Order> CheckOrderItemsQuantity(IServiceScope scope, int orderId)
     {
         var unitOfWorkFactory = scope.ServiceProvider.GetService<IUnitOfWorkFactory>()!;
         using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork();
