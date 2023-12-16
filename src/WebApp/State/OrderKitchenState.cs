@@ -38,17 +38,9 @@ public class OrderKitchenState : IDisposable
         OrderStatuses[orderId] = status;
     }
 
-    public async Task SaveOrderStatus(OrderDto order)
+    public Task SaveOrderStatus(OrderDto order)
     {
-        var currentStatus = order.Status;
-        var status = OrderStatuses[order.Id];
-        
-        if (currentStatus == status) return;
-
-        await orderService.UpdateOrderStatus(order.Id, status);
-        order.Status = status;
-
-        await toastService.ToastSuccess("Status changed.");
+        throw new NotImplementedException();
     }
 
     private void OrderCreated(Order order)
