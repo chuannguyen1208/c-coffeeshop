@@ -21,14 +21,16 @@ public class GetItemsQuery :  IRequest<IEnumerable<ItemDto>>
             var ingredientRepo = unitOfwork.GetRepo<Ingredient>();
 
             var ingredients = await ingredientRepo.GetManyAsync(cancellationToken).ConfigureAwait(false);
+            var entities = repo.Entities;
+
             var res = new List<ItemDto>();
 
-            foreach (var item in repo.Entities.AsEnumerable())
+            foreach (var entity in entities.AsEnumerable())
             {
-                var itemDto = mapper.Map<ItemDto>(item);
-                itemDto.QuantityRemainingEst = item.GetQuantityRemainingEst(ingredients);
+                var dto = mapper.Map<ItemDto>(entity);
+                dto.QuantityRemainingEst = entity.GetQuantityRemainingEst(ingredients);
 
-                res.Add(itemDto);
+                res.Add(dto);
             }
 
             return res;

@@ -14,11 +14,23 @@ public class Item
     public string? Img { get; set; }
     public string? ImgBase64 { get; set; }
 
-    public virtual IEnumerable<ItemIngredient> ItemIngredients { get; set; } = [];
+    public virtual ICollection<ItemIngredient> ItemIngredients { get; set; } = [];
 
     public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
     {
+        var ingredientsDictionary = ingredients.ToDictionary(s => s.Id, s => s.StockLevel);
+        var minQuantity = 0;
+        foreach (var itemIngredient in ItemIngredients)
+        {
+            var ingredientStockLevel = ingredientsDictionary[itemIngredient.IngredientId];
+            var quantity = ingredientStockLevel / itemIngredient.QuantityRequired;
 
-        return 0;
+            if (minQuantity == 0 || quantity < minQuantity)
+            {
+                minQuantity = quantity;
+            }
+        }
+
+        return minQuantity;
     }
 }

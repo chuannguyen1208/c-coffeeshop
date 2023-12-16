@@ -13,7 +13,7 @@ internal class ItemIngredientConfiguration : IEntityTypeConfiguration<ItemIngred
     public void Configure(EntityTypeBuilder<ItemIngredient> builder)
     {
         builder.HasKey(s => s.Id);
-        builder.HasOne(s => s.Item).WithMany().HasForeignKey(s => s.ItemId);
+        builder.HasOne(s => s.Item).WithMany(s => s.ItemIngredients).HasForeignKey(s => s.ItemId);
         builder.HasOne(s => s.Ingredient).WithMany().HasForeignKey(s => s.IngredientId);
     }
 }

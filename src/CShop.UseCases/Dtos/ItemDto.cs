@@ -16,6 +16,7 @@ public class ItemDto
     public int QuantityRemainingEst { get; set; }
     public string? Img { get; set; }
     public string? ImgBase64 { get; set; }
+    public IEnumerable<ItemIngredientDto> ItemIngredients { get; set; } = [];
 }
 
 public class ItemDtoProfile : Profile

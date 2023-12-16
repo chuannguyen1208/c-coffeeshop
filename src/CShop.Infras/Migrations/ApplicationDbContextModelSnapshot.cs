@@ -46,7 +46,7 @@ namespace CShop.Infras.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredients", (string)null);
                 });
 
             modelBuilder.Entity("CShop.UseCases.Entities.Item", b =>
@@ -75,7 +75,7 @@ namespace CShop.Infras.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("CShop.UseCases.Entities.ItemIngredient", b =>
@@ -101,7 +101,7 @@ namespace CShop.Infras.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemIngredients");
+                    b.ToTable("ItemIngredients", (string)null);
                 });
 
             modelBuilder.Entity("CShop.UseCases.Entities.Order", b =>
@@ -123,7 +123,7 @@ namespace CShop.Infras.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("CShop.UseCases.Entities.OrderItem", b =>
@@ -152,7 +152,7 @@ namespace CShop.Infras.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("CShop.UseCases.Entities.ItemIngredient", b =>
