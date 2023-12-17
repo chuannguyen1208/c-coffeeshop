@@ -19,13 +19,14 @@ public class Item
     public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
     {
         var ingredientsDictionary = ingredients.ToDictionary(s => s.Id, s => s.StockLevel);
-        var minQuantity = 0;
+        var minQuantity = -1;
+
         foreach (var itemIngredient in ItemIngredients)
         {
             var ingredientStockLevel = ingredientsDictionary[itemIngredient.IngredientId];
             var quantity = ingredientStockLevel / itemIngredient.QuantityRequired;
 
-            if (minQuantity == 0 || quantity < minQuantity)
+            if (minQuantity == -1 || quantity < minQuantity)
             {
                 minQuantity = quantity;
             }
