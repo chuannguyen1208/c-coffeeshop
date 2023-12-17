@@ -54,7 +54,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.ApplyOutboxMigrations();
 app.ApplyInfrasMigration();
 
 app.Run();
