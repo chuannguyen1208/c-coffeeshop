@@ -1,13 +1,6 @@
 version: '3.4'
 
 services:
-  webapp:
-    image: ${DOCKER_REGISTRY-}webapp
-    build:
-      context: .
-      dockerfile: src/WebApp/Dockerfile
-    networks:
-      - my_network
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2017-latest
     container_name: mssql
