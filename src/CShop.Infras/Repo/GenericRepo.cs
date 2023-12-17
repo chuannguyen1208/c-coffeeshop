@@ -1,5 +1,6 @@
 ﻿using CShop.UseCases.Infras;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;

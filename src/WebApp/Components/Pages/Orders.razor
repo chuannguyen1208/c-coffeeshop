@@ -14,6 +14,7 @@
                 <div class="row">
                     <div class="col-2">Ord</div>
                     <div class="col-2 text-center">Status</div>
+                    <div class="col">Message</div>
                     <div class="col"></div>
                 </div>
             </li>
@@ -25,6 +26,7 @@
                         <div class="col-2 text-center @StatusColor(order)">
                             <span class="px-4 py-1 border border-1 rounded-pill">@order.Status</span>
                         </div>
+                        <div class="col">@order.FailedReason</div>
                         <div class="col text-end">
                             @if (ShowChangeStatusBtn(order))
                             {
