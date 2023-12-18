@@ -8,6 +8,6 @@ internal class CounterService(IOrderService orderService, OrderBridge bridge) : 
     public async Task HandleOrderUpdated(int orderId)
     {
         var order = await orderService.GetOrder(orderId).ConfigureAwait(false);
-        bridge.InvokeOrderUpdated(order);
+        await bridge.InvokeOrderUpdated(order);
     }
 }

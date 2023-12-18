@@ -17,8 +17,8 @@ public class OrderSubmittedConsumer(IKitchenService kitchenService) : IConsumer<
     public async Task Consume(ConsumeContext<OrderSubmitted> context)
     {
         Log.Information($"Order submitted with order id {context.Message.OrderId}.");
-        await Task.Delay(5000);
         await kitchenService.HandleOrderSubmitted(context.Message.OrderId).ConfigureAwait(false);
+        Log.Information($"Order submitted with order id {context.Message.OrderId} consumed.");
     }
 }
 
@@ -29,5 +29,10 @@ public class OrderSubmittedConsumerDefinition : ConsumerDefinition<OrderSubmitte
     {
         EndpointName = "order_submitted";
         ConcurrentMessageLimit = 1;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<OrderSubmittedConsumer> consumerConfigurator, IRegistrationContext context)
+    {
+        endpointConfigurator.UseMessageRetry(r => r.Immediate(3));
     }
 }

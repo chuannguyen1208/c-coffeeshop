@@ -12,57 +12,44 @@ internal class KitchenService(IServiceProvider sp, IOrderPublisher orderPublishe
 {
     public async Task HandleOrderSubmitted(int orderId)
     {
-        var retryCount = 3;
+        var unitOfWorkFactory = sp.GetRequiredService<IUnitOfWorkFactory>();
+        using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork();
 
-        while (retryCount > 0)
+        var orderRepo = unitOfWork.GetRepo<Order>();
+        var itemRepo = unitOfWork.GetRepo<Item>();
+        var ingredientRepo = unitOfWork.GetRepo<Ingredient>();
+
+        var cancellationToken = CancellationToken.None;
+
+        var order = await orderRepo.GetAsync(orderId, cancellationToken).ConfigureAwait(false) ?? throw new KeyNotFoundException();
+        var ingredients = await ingredientRepo.GetManyAsync(cancellationToken).ConfigureAwait(false);
+
+        try
         {
-            var unitOfWorkFactory = sp.GetRequiredService<IUnitOfWorkFactory>();
-            using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork();
-
-            var orderRepo = unitOfWork.GetRepo<Order>();
-            var itemRepo = unitOfWork.GetRepo<Item>();
-            var ingredientRepo = unitOfWork.GetRepo<Ingredient>();
-
-            var cancellationToken = CancellationToken.None;
-
-            var order = await orderRepo.GetAsync(orderId, cancellationToken).ConfigureAwait(false) ?? throw new KeyNotFoundException();
-            var ingredients = await ingredientRepo.GetManyAsync(cancellationToken).ConfigureAwait(false);
-
-            try
+            foreach (var orderItem in order.OrderItems)
             {
-
-
-                foreach (var orderItem in order.OrderItems)
-                {
-                    var item = await itemRepo.GetAsync(orderItem.ItemId, CancellationToken.None).ConfigureAwait(false);
-                    item!.PrepareQuantity(ingredients, orderItem.Quantity);
-                }
-
-                order.Status = OrderStatus.Accepted;
-                await ingredientRepo.UpdateRangeAsync(ingredients, CancellationToken.None);
-
-                await orderRepo.UpdateAsync(order, CancellationToken.None).ConfigureAwait(false);
-                await unitOfWork.SaveChangesAsync();
-
-                break;
+                var item = await itemRepo.GetAsync(orderItem.ItemId, CancellationToken.None).ConfigureAwait(false);
+                item!.PrepareQuantity(ingredients, orderItem.Quantity);
             }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                Log.Error(ex.Message);
-                retryCount--;
-            }
-            catch (Exception ex)
-            {
-                order.FailedReason = ex.Message;
-                order.Status = OrderStatus.Returned;
 
-                await orderRepo.UpdateAsync(order, CancellationToken.None).ConfigureAwait(false);
-                await unitOfWork.SaveChangesAsync();
-            }
-            finally
-            {
-                unitOfWork.Dispose();
-            }
+            order.Status = OrderStatus.Accepted;
+            await ingredientRepo.UpdateRangeAsync(ingredients, CancellationToken.None);
+
+            await orderRepo.UpdateAsync(order, CancellationToken.None).ConfigureAwait(false);
+            await unitOfWork.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            Log.Error(ex.Message);
+            throw;
+        }
+        catch (ArgumentException ex)
+        {
+            order.FailedReason = ex.Message;
+            order.Status = OrderStatus.Returned;
+
+            await orderRepo.UpdateAsync(order, CancellationToken.None).ConfigureAwait(false);
+            await unitOfWork.SaveChangesAsync();
         }
 
         await orderPublisher.PublishOrderUpdated(new OrderUpdated(orderId));
