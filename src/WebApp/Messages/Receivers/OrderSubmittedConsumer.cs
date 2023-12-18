@@ -9,7 +9,7 @@ using WebApp.Services;
 
 namespace WebApp.Messages.Receivers;
 
-public class OrderSubmmittedReceiver(IKitchenService kitchenService) : IConsumer<OrderSubmitted>
+public class OrderSubmittedConsumer(IKitchenService kitchenService) : IConsumer<OrderSubmitted>
 {
     public async Task Consume(ConsumeContext<OrderSubmitted> context)
     {

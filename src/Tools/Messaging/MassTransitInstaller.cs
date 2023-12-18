@@ -1,10 +1,13 @@
 ﻿using MassTransit;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using System.Reflection;
+
 using Tools.Messaging.Messages;
 
 namespace Tools.Messaging;
@@ -18,19 +21,19 @@ public static class MassTransitInstaller
 
         services.AddMassTransit(x =>
         {
-            x.SetKebabCaseEndpointNameFormatter();
+            x.SetSnakeCaseEndpointNameFormatter();
+            x.AddConsumers(assembliesWithConsumers);
 
-            x.AddConsumers(Assembly.GetEntryAssembly());
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(host: brokerSettings.Host, virtualHost: "/", h =>
-                {
-                    h.Username(brokerSettings.Username);
-                    h.Password(brokerSettings.Password);
-                });
+                  cfg.Host(host: brokerSettings.Host, virtualHost: "/", h =>
+                  {
+                      h.Username(brokerSettings.Username);
+                      h.Password(brokerSettings.Password);
+                  });
 
-                cfg.ConfigureEndpoints(context);
-            });
+                  cfg.ConfigureEndpoints(context);
+              });
         });
 
         services.AddTransient<IMessageSender, MessageSender>();

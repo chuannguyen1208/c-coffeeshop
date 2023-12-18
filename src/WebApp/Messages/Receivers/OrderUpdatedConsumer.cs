@@ -8,7 +8,7 @@ using WebApp.Services;
 
 namespace WebApp.Messages.Receivers;
 
-public class OrderUpdatedReceiver(ICounterService counterService) : IConsumer<OrderUpdated>
+public class OrderUpdatedConsumer(ICounterService counterService) : IConsumer<OrderUpdated>
 {
     public async Task Consume(ConsumeContext<OrderUpdated> context)
     {
