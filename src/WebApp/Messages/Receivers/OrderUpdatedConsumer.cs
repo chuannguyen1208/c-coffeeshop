@@ -15,3 +15,12 @@ public class OrderUpdatedConsumer(ICounterService counterService) : IConsumer<Or
         await counterService.HandleOrderUpdated(context.Message.OrderId);
     }
 }
+
+public class OrderUpdatedConsumerDefinition : ConsumerDefinition<OrderUpdatedConsumer>
+{
+    public OrderUpdatedConsumerDefinition()
+    {
+        EndpointName = "order_updated";
+        ConcurrentMessageLimit = 2;
+    }
+}

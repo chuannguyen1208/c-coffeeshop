@@ -110,7 +110,12 @@ public class OrderState : IDisposable
 
     public async Task Submit()
     {
-        Order = await orderService.UpsertOrder(Order);
+        //Order = await orderService.UpsertOrder(Order);
+
+        var task = orderService.UpsertOrder(Order);
+        var task2 = orderService.UpsertOrder(Order);
+
+        await Task.WhenAll(task, task2);
         await toastService.ToastSuccess("Order submitted.");
     }
 
