@@ -7,27 +7,27 @@ public class OrderItem : AggregateRoot
         Guid id,
         Guid itemId,
         int quantity,
-        decimal price,
-        Item item) : base(id)
+        decimal price) : base(id)
     {
         ItemId = itemId;
         Quantity = quantity;
         Price = price;
-        Item = item;
     }
 
     public Guid ItemId { get; private set; }
+    public Guid OrderId { get; set; }
     public int Quantity { get; private set; }
     public decimal Price { get; private set; }
+
     public virtual Item Item { get; private set; } = default!;
+    public virtual Order Order { get; private set; } = default!;
 
     public static OrderItem Create(
         Guid itemId,
         int quantity,
-        decimal price,
-        Item item = default!)
+        decimal price)
     {
-        var entity = new OrderItem(Guid.NewGuid(), itemId, quantity, price, item);
+        var entity = new OrderItem(Guid.NewGuid(), itemId, quantity, price);
         return entity;
     }
 

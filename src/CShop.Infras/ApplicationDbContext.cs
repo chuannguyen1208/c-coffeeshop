@@ -1,5 +1,4 @@
 ﻿using CShop.Domain.Entities;
-using CShop.Infras.Configuration;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +14,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new ItemIngredientConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

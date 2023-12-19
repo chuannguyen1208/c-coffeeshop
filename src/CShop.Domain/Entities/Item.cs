@@ -16,14 +16,12 @@ public class Item : AggregateRoot
         string name,
         decimal price,
         string? img,
-        string? imgBase64,
-        IEnumerable<ItemIngredient> itemIngredients) : base(id)
+        string? imgBase64) : base(id)
     {
         Name = name;
         Price = price;
         Img = img;
         Img = imgBase64;
-        ItemIngredients = itemIngredients.ToList();
     }
 
     public static Item Create(
@@ -33,7 +31,8 @@ public class Item : AggregateRoot
         string? imgBase64 = null,
         IEnumerable<ItemIngredient>? itemIngredients = null)
     {
-        var item = new Item(Guid.NewGuid(), name, price, img, imgBase64, itemIngredients ?? []);
+        var item = new Item(Guid.NewGuid(), name, price, img, imgBase64);
+        item.UpdateItems(itemIngredients ?? []);
         item.RaiseDomainEvent(new ItemCreatedDomainEvent(item.Id));
         return item;
     }
@@ -54,7 +53,16 @@ public class Item : AggregateRoot
         Price = price;
         Img = img;
         ImgBase64 = imgBase64;
+        UpdateItems(itemIngredients ?? []);
+    }
 
+    public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void UpdateItems(IEnumerable<ItemIngredient> itemIngredients)
+    {
         foreach (var itemIngredient in itemIngredients ?? [])
         {
             var existingItemIngredient = ItemIngredients.FirstOrDefault(s => s.Id == itemIngredient.Id);
@@ -67,10 +75,5 @@ public class Item : AggregateRoot
                 existingItemIngredient.Update(itemIngredient.QuantityRequired);
             }
         }
-    }
-
-    public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
-    {
-        throw new NotImplementedException();
     }
 }
