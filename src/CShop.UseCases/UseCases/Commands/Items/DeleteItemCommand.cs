@@ -1,14 +1,10 @@
-﻿using CShop.UseCases.Entities;
+﻿using CShop.Domain.Entities;
 using CShop.UseCases.Infras;
+
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands.Items;
-internal record DeleteItemCommand(int Id) : IRequest
+internal record DeleteItemCommand(Guid Id) : IRequest
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<DeleteItemCommand>
     {
@@ -17,6 +13,7 @@ internal record DeleteItemCommand(int Id) : IRequest
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Item>();
             await repo.DeleteAsync(request.Id, cancellationToken).ConfigureAwait(false);
+            await unitOfwork.SaveChangesAsync();
         }
     }
 }

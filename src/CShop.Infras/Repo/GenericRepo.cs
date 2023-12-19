@@ -1,11 +1,6 @@
 ﻿using CShop.UseCases.Infras;
+
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.Infras.Repo;
 
@@ -22,13 +17,13 @@ internal class GenericRepo<TEntity>(DbContext context) : IRepo<TEntity>
         return entity;
     }
 
-    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var entity = await DbSet.FindAsync([id], cancellationToken: cancellationToken);
         DbSet.Remove(entity!);
     }
 
-    public async Task<TEntity?> GetAsync(int id, CancellationToken cancellationToken)
+    public async Task<TEntity?> GetAsync(Guid id, CancellationToken cancellationToken)
     {
         var entity = await DbSet.FindAsync([id], cancellationToken: cancellationToken);
         return entity;

@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\CShop.Domain\CShop.Domain.csproj" />
 		<ProjectReference Include="..\CShop.UseCases\CShop.UseCases.csproj" />
 	</ItemGroup>
 	<ItemGroup>

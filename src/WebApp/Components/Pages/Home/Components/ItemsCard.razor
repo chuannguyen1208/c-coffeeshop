@@ -76,7 +76,7 @@
             </div>
 
             <div class="row mt-5">
-                @if (orderState.Order.Status != CShop.UseCases.Entities.OrderStatus.Undefined)
+                @if (orderState.Order.Status != OrderStatus.Undefined)
                 {
                     <div class="col-12">
                         <div class="alert alert-info" role="alert">
@@ -133,7 +133,7 @@
 
     async Task RetrieveOrder()
     {
-        if (int.TryParse(retrieveOrderId, out int orderId))
+        if (Guid.TryParse(retrieveOrderId, out var orderId))
         {
             await orderState.RetrieveOrder(orderId);
         }

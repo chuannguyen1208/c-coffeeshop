@@ -14,5 +14,8 @@
 		<PackageReference Include="Serilog" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\CShop.Domain\CShop.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

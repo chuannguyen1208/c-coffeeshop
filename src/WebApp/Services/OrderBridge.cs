@@ -1,5 +1,4 @@
 ﻿using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
 
 namespace WebApp.Services;
 

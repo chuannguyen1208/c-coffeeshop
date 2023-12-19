@@ -1,10 +1,7 @@
-﻿using CShop.UseCases.Entities;
-using CShop.UseCases.Infras;
-using CShop.UseCases.Messages;
+﻿using CShop.UseCases.Messages;
 using CShop.UseCases.Services;
+
 using MassTransit;
-using Serilog;
-using WebApp.Services;
 
 namespace WebApp.Messages.Receivers;
 

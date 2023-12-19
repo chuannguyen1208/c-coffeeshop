@@ -1,29 +1,28 @@
-﻿using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
-using CShop.UseCases.Infras;
+﻿using CShop.Domain.Entities;
+using CShop.UseCases.Dtos;
 using CShop.UseCases.UseCases.Commands.Orders;
 using CShop.UseCases.UseCases.Queries.Orders;
+
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CShop.UseCases.Services;
 public interface IOrderService
 {
     Task<OrderDto> UpsertOrder(OrderDto model);
-    Task DeleteOrder(int id);
-    Task<OrderDto> GetOrder(int id);
+    Task DeleteOrder(Guid id);
+    Task<OrderDto> GetOrder(Guid id);
     Task<IEnumerable<OrderDto>> GetOrders();
-    Task UpdateOrderStatus(int id, OrderStatus status);
+    Task UpdateOrderStatus(Guid id, OrderStatus status);
 }
 
 internal class OrderService(IMediator mediator) : IOrderService
 {
-    public async Task DeleteOrder(int id)
+    public async Task DeleteOrder(Guid id)
     {
         await mediator.Send(new OrderDeleteCommand(id));
     }
 
-    public async Task<OrderDto> GetOrder(int id)
+    public async Task<OrderDto> GetOrder(Guid id)
     {
         return await mediator.Send(new GetOrderQuery(id));
     }
@@ -34,7 +33,7 @@ internal class OrderService(IMediator mediator) : IOrderService
         return res;
     }
 
-    public async Task UpdateOrderStatus(int id, OrderStatus status)
+    public async Task UpdateOrderStatus(Guid id, OrderStatus status)
     {
         await mediator.Send(new OrderUpdateStatusCommand(id, status));
     }

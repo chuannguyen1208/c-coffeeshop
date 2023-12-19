@@ -1,18 +1,14 @@
-﻿using CShop.UseCases.Entities;
+﻿using CShop.Domain.Entities;
 using CShop.UseCases.Infras;
-using CShop.UseCases.UseCases.Events.Orders;
+
 using MediatR;
+
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands.Orders;
-public record OrderUpdateStatusCommand(int OrderId, OrderStatus Status) : IRequest
+public record OrderUpdateStatusCommand(Guid OrderId, OrderStatus Status) : IRequest
 {
-    private class Handler(IServiceProvider sp, IMediator mediator) : IRequestHandler<OrderUpdateStatusCommand>
+    private class Handler(IServiceProvider sp) : IRequestHandler<OrderUpdateStatusCommand>
     {
         public async Task Handle(OrderUpdateStatusCommand request, CancellationToken cancellationToken)
         {
@@ -27,10 +23,12 @@ public record OrderUpdateStatusCommand(int OrderId, OrderStatus Status) : IReque
                 return;
             }
 
-            order.Status = request.Status;
+            order.Update(
+                request.Status,
+                order.FailedReason);
+
             await repo.UpdateAsync(order, cancellationToken).ConfigureAwait(false);
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            await mediator.Publish(new OrderUpdatedNotification(order.Id), cancellationToken).ConfigureAwait(false);
         }
     }
 }

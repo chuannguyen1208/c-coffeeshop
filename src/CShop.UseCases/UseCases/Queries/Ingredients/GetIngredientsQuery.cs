@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
+
+using CShop.Domain.Entities;
 using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Queries.Ingredients;
 internal class GetIngredientsQuery : IRequest<IEnumerable<IngredientDto>>

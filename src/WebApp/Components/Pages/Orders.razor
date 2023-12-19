@@ -1,4 +1,4 @@
-﻿@using CShop.UseCases.Entities
+﻿@using CShop.Domain.Entities
 @page "/orders"
 @rendermode InteractiveServer
 @implements IDisposable
@@ -91,9 +91,10 @@
     {
         return order.Status switch
         {
-            CShop.UseCases.Entities.OrderStatus.Created => "text-info",
-            CShop.UseCases.Entities.OrderStatus.Processing => "text-secondary",
-            CShop.UseCases.Entities.OrderStatus.Completed => "text-success",
+            OrderStatus.Created => "text-info",
+            OrderStatus.Accepted => "text-info",
+            OrderStatus.Processing => "text-secondary",
+            OrderStatus.Completed => "text-success",
             _ => ""
         };
     }

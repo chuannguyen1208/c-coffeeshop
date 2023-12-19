@@ -1,9 +1,7 @@
-﻿using AutoMapper;
+﻿using CShop.Domain.Entities;
 using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
 using CShop.UseCases.Services;
-using Microsoft.AspNetCore.Components;
-using Serilog;
+
 using WebApp.Interop;
 using WebApp.Services;
 
@@ -11,11 +9,11 @@ namespace WebApp.State;
 
 public class OrderState : IDisposable
 {
-    private readonly Guid Id;
-    private readonly IItemService itemService;
-    private readonly IOrderService orderService;
-    private readonly IToastService toastService;
-    private readonly OrderBridge orderMessageBridge;
+    private readonly Guid _id;
+    private readonly IItemService _itemService;
+    private readonly IOrderService _orderService;
+    private readonly IToastService _toastService;
+    private readonly OrderBridge _orderMessageBridge;
 
     public OrderState(
         IItemService itemService,
@@ -23,12 +21,12 @@ public class OrderState : IDisposable
         IToastService toastService,
         OrderBridge orderMessageBridge)
     {
-        this.itemService = itemService;
-        this.orderService = orderService;
-        this.toastService = toastService;
-        this.orderMessageBridge = orderMessageBridge;
-        this.orderMessageBridge.OrderUpdated += OrderUpdated;
-        Id = Guid.NewGuid();
+        _itemService = itemService;
+        _orderService = orderService;
+        _toastService = toastService;
+        _orderMessageBridge = orderMessageBridge;
+        _orderMessageBridge.OrderUpdated += OrderUpdated;
+        _id = Guid.NewGuid();
     }
 
     private async Task OrderUpdated(OrderDto order)
@@ -54,7 +52,7 @@ public class OrderState : IDisposable
 
     public async Task GetItems()
     {
-        Items = await itemService.GetItems().ConfigureAwait(false);
+        Items = await _itemService.GetItems().ConfigureAwait(false);
     }
 
     public void AddItem(ItemDto item)
@@ -102,21 +100,21 @@ public class OrderState : IDisposable
         NotifyStateChanged();
     }
 
-    public async Task RetrieveOrder(int orderId)
+    public async Task RetrieveOrder(Guid orderId)
     {
-        Order = await orderService.GetOrder(orderId).ConfigureAwait(false);
+        Order = await _orderService.GetOrder(orderId).ConfigureAwait(false);
         NotifyStateChanged();
     }
 
     public async Task Submit()
     {
-        Order = await orderService.UpsertOrder(Order);
-        await toastService.ToastSuccess("Order submitted.");
+        Order = await _orderService.UpsertOrder(Order);
+        await _toastService.ToastSuccess("Order submitted.");
     }
 
     public void Dispose()
     {
-        orderMessageBridge.OrderUpdated -= OrderUpdated;
+        _orderMessageBridge.OrderUpdated -= OrderUpdated;
         GC.SuppressFinalize(this);
     }
 

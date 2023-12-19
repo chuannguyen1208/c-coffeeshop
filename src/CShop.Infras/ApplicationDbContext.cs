@@ -1,11 +1,7 @@
-﻿using CShop.Infras.Configuration;
-using CShop.UseCases.Entities;
+﻿using CShop.Domain.Entities;
+using CShop.Infras.Configuration;
+
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.Infras;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)

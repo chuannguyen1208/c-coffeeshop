@@ -1,14 +1,10 @@
-﻿using CShop.UseCases.Entities;
+﻿using CShop.Domain.Entities;
 using CShop.UseCases.Infras;
+
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Commands.Orders;
-public record OrderDeleteCommand(int Id) : IRequest
+public record OrderDeleteCommand(Guid Id) : IRequest
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<OrderDeleteCommand>
     {

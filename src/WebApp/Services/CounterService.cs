@@ -1,11 +1,10 @@
 ﻿using CShop.UseCases.Services;
-using MediatR;
 
 namespace WebApp.Services;
 
 internal class CounterService(IOrderService orderService, OrderBridge bridge) : ICounterService
 {
-    public async Task HandleOrderUpdated(int orderId)
+    public async Task HandleOrderUpdated(Guid orderId)
     {
         var order = await orderService.GetOrder(orderId).ConfigureAwait(false);
         await bridge.InvokeOrderUpdated(order);

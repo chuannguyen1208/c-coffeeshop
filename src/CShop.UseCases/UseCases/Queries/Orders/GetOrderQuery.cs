@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
+
+using CShop.Domain.Entities;
 using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Queries.Orders;
-internal record GetOrderQuery(int Id) : IRequest<OrderDto>
+internal record GetOrderQuery(Guid Id) : IRequest<OrderDto>
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetOrderQuery, OrderDto>
     {

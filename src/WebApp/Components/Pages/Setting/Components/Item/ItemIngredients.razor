@@ -32,26 +32,23 @@
     private IEnumerable<IngredientDto> ingredients = [];
 
     [Parameter]
-    public int ItemId { get; set; }
+    public Guid? ItemId { get; set; }
     public List<ItemIngredientDto> itemIngredients = [];
 
     protected override async Task OnInitializedAsync()
     {
         ingredients = await ingredientService.GetIngredients();
-
-        if (ItemId != 0)
-        {
-            var itemIngredientsEnumerable = await itemService.GetItemsIngredients(ItemId);
-            itemIngredients = itemIngredientsEnumerable.ToList();
-        }
+        if (!ItemId.HasValue) return;
+        var itemIngredientsEnumerable = await itemService.GetItemsIngredients(ItemId.Value);
+        itemIngredients = itemIngredientsEnumerable.ToList();
     }
 
     void AddItemIngredient()
     {
         itemIngredients.Add(new ItemIngredientDto
             {
-                IngredientId = 0,
-                ItemId = ItemId,
+                IngredientId = Guid.NewGuid(),
+                ItemId = ItemId ?? Guid.NewGuid(),
                 QuantityRequired = 0
             });
     }

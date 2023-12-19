@@ -1,48 +1,46 @@
-﻿using AutoMapper;
+﻿using CShop.Domain.Entities;
 using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
 using CShop.UseCases.Services;
-using WebApp.Interop;
 using WebApp.Services;
 
 namespace WebApp.State;
 
 public class OrderKitchenState : IDisposable
 {
-    private readonly IOrderService orderService;
-    private readonly OrderBridge orderMessageBridge;
+    private readonly IOrderService _orderService;
+    private readonly OrderBridge _orderMessageBridge;
 
     public OrderKitchenState(IOrderService orderService, OrderBridge orderMessageBridge)
     {
-        this.orderService = orderService;
-        this.orderMessageBridge = orderMessageBridge;
-        this.orderMessageBridge.OrderUpdated += OrderUpdated;
+        _orderService = orderService;
+        _orderMessageBridge = orderMessageBridge;
+        _orderMessageBridge.OrderUpdated += OrderUpdated;
     }
 
 
     public event Action? OnChange;
     public LinkedList<OrderDto> Orders { get; private set; } = [];
-    public Dictionary<int, OrderStatus> OrderStatuses { get; private set; } = [];
+    public Dictionary<Guid, OrderStatus> OrderStatuses { get; private set; } = [];
 
     public async Task Init()
     {
-        var orders = await orderService.GetOrders();
+        var orders = await _orderService.GetOrders();
         Orders = new LinkedList<OrderDto>(orders);
     }
 
-    public void ChangeOrderStatus(int orderId, OrderStatus status)
+    public void ChangeOrderStatus(Guid orderId, OrderStatus status)
     {
         OrderStatuses[orderId] = status;
     }
 
     public async Task SaveOrderStatus(OrderDto order)
     {
-        await orderService.UpdateOrderStatus(order.Id, OrderStatuses[order.Id]).ConfigureAwait(false);
+        await _orderService.UpdateOrderStatus(order.Id, OrderStatuses[order.Id]).ConfigureAwait(false);
     }
 
     public void Dispose()
     {
-        orderMessageBridge.OrderUpdated -= OrderUpdated;
+        _orderMessageBridge.OrderUpdated -= OrderUpdated;
         GC.SuppressFinalize(this);
     }
 

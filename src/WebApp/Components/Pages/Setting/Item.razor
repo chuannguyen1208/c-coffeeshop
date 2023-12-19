@@ -1,11 +1,12 @@
 ﻿@using WebApp.Components.Pages.Setting.Components.Item
-@page "/settings/item/{Id:int}"
+@page "/settings/item"
+@page "/settings/item/{Id:Guid}"
 @rendermode InteractiveServer
 @inject IItemService itemService
 @inject IToastService toast
 @inject NavigationManager nav
 
-<PageTitle>@(Id == 0 ? "New item" : "Item detail")</PageTitle>
+<PageTitle>@(Id.HasValue ? "New item" : "Item detail")</PageTitle>
 
 <div class="row">
     <div class="col-5 col-xs-12 p-2">
@@ -49,13 +50,13 @@
     ItemIngredients settingItemIngredientsElement = default!;
 
     [Parameter] 
-    public int Id { get; set; }
+    public Guid? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id != 0)
+        if (Id.HasValue)
         {
-            model = await itemService.GetItem(Id);
+            model = await itemService.GetItem(Id.Value);
         }
     }
 
@@ -77,8 +78,8 @@
     {
         try
         {
-            var itemIngredients = settingItemIngredientsElement.itemIngredients;
-            await itemService.UpsertItem(model, file, itemIngredients);
+            model.ItemIngredients = settingItemIngredientsElement.itemIngredients;
+            await itemService.UpsertItem(model, file);
             nav.NavigateTo("settings");
         }
         catch (Exception ex)

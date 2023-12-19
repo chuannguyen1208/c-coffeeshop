@@ -1,9 +1,6 @@
 using WebApp.Components;
 using CShop.UseCases;
 using CShop.Infras;
-using Microsoft.EntityFrameworkCore;
-using CShop.UseCases.Entities;
-using CShop.UseCases.Infras;
 using WebApp.State;
 using WebApp.Interop;
 using Tools.Messaging;

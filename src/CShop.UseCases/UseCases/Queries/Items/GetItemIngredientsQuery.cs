@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
+
+using CShop.Domain.Entities;
 using CShop.UseCases.Dtos;
-using CShop.UseCases.Entities;
 using CShop.UseCases.Infras;
+
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.UseCases.UseCases.Queries.Items;
-public record GetItemIngredientsQuery(int ItemId) : IRequest<IEnumerable<ItemIngredientDto>>
+public record GetItemIngredientsQuery(Guid ItemId) : IRequest<IEnumerable<ItemIngredientDto>>
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetItemIngredientsQuery, IEnumerable<ItemIngredientDto>>
     {

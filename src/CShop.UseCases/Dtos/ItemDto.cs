@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
-using CShop.UseCases.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using CShop.Domain.Entities;
 
 namespace CShop.UseCases.Dtos;
 public class ItemDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public required string Name { get; set; }
     public decimal Price { get; set; }
     public int Quantity { get; set; }
@@ -23,6 +19,6 @@ public class ItemDtoProfile : Profile
 {
     public ItemDtoProfile()
     {
-        CreateMap<Item, ItemDto>().ReverseMap();
+        CreateMap<Item, ItemDto>();
     }
 }
