@@ -3,11 +3,7 @@
 namespace CShop.Domain.Entities;
 public class ItemIngredient : AggregateRoot
 {
-    protected ItemIngredient() : this(0, Guid.Empty, Guid.Empty)
-    {
-    }
-
-    private ItemIngredient(
+    protected ItemIngredient(
         int quantityRequired,
         Guid itemId,
         Guid ingredientId) : base(Guid.Empty)

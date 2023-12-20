@@ -4,9 +4,7 @@ using CShop.Domain.Primitives;
 namespace CShop.Domain.Entities;
 public class Item : AggregateRoot
 {
-    protected Item() : this(string.Empty, 0, null) { }
-
-    private Item(
+    protected Item(
         string name,
         decimal price,
         string? imgBase64) : base(Guid.Empty)

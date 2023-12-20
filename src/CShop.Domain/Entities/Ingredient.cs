@@ -5,9 +5,7 @@ using CShop.Domain.Primitives;
 namespace CShop.Domain.Entities;
 public class Ingredient : AggregateRoot
 {
-    protected Ingredient() : this(string.Empty, 0, string.Empty) { }
-
-    private Ingredient(
+    protected Ingredient(
         string name,
         int stockLevel,
         string stockName) : base(Guid.Empty)
