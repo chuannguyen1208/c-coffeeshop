@@ -3,12 +3,13 @@
 namespace CShop.Domain.Entities;
 public class ItemIngredient : AggregateRoot
 {
-    protected ItemIngredient() : base(Guid.Empty) { }
+    protected ItemIngredient(Guid id) : base(id) { }
 
     private ItemIngredient(
+        Guid id,
         int quantityRequired,
         Guid itemId,
-        Guid ingredientId) : this()
+        Guid ingredientId) : this(id)
     {
         QuantityRequired = quantityRequired;
         ItemId = itemId;
@@ -24,13 +25,14 @@ public class ItemIngredient : AggregateRoot
     public virtual Ingredient Ingredient { get; private set; } = default!;
 
     public static ItemIngredient Create(
+        Guid id,
         int quantityRequired,
         Guid itemId,
         Guid ingredientId,
         Item item = default!,
         Ingredient ingredient = default!)
     {
-        var entity = new ItemIngredient(quantityRequired, itemId, ingredientId)
+        var entity = new ItemIngredient(id, quantityRequired, itemId, ingredientId)
         {
             Item = item,
             Ingredient = ingredient

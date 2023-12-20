@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace CShop.UseCases.UseCases.Commands.Items;
-public record CreateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
+public record CreateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<ItemIngredientDto> ItemIngredients) : IRequest
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IFileUploader fileUploader) : IRequestHandler<CreateItemCommand>
     {
@@ -25,15 +25,13 @@ public record CreateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
             }
 
             var item = Item.Create(request.Model.Name, request.Model.Price, imgBase64);
-
-            var ingredients = request.Model.ItemIngredients.Select(s => ItemIngredient.Create(
+            var itemIngredients = request.ItemIngredients.Select(s => ItemIngredient.Create(
+                id: Guid.NewGuid(),
                 quantityRequired: s.QuantityRequired,
-                itemId: default,
-                item: item,
+                itemId: s.ItemId,
                 ingredientId: s.IngredientId));
 
-            item.UpdateItems(ingredients);
-            
+            await item.UpdateItems(itemIngredients);
             await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
         }

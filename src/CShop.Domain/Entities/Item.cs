@@ -43,26 +43,27 @@ public class Item : AggregateRoot
         ImgBase64 = imgBase64;
     }
 
-    public void UpdateItems(IEnumerable<ItemIngredient> itemIngredients)
+    public async Task UpdateItems(
+        IEnumerable<ItemIngredient> itemIngredients,
+        Func<IEnumerable<ItemIngredient>, Task>? deleteFunc = null)
     {
-        var deleteItems = ItemIngredients.Where(s => itemIngredients.Any(i => i.Id == s.Id));
-
-        foreach (var item in deleteItems)
+        var deleteItems = ItemIngredients.Where(s => !itemIngredients.Any(i => i.Id == s.Id));
+        if (deleteFunc != null)
         {
-            ItemIngredients.Remove(item);
+            await deleteFunc(deleteItems);
         }
 
         foreach (var item in itemIngredients)
         {
-            var existingItem = ItemIngredients.FirstOrDefault(s => s.Id == item.Id);
+            var existing = ItemIngredients.FirstOrDefault(s => s.Id == item.Id);
 
-            if (existingItem is null)
+            if (existing is null)
             {
                 ItemIngredients.Add(item);
                 continue;
             }
 
-            existingItem.Update(item.QuantityRequired);
+            existing.Update(item.QuantityRequired);
         }
     }
 

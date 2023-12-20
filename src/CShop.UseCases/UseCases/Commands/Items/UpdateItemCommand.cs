@@ -4,11 +4,12 @@ using CShop.UseCases.Infras;
 using CShop.UseCases.Services;
 
 using MediatR;
+
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CShop.UseCases.UseCases.Commands.Items;
-public record UpdateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
+public record UpdateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<ItemIngredientDto> ItemIngredients) : IRequest
 {
     private class Handler(IServiceProvider sp, IFileUploader fileUploader) : IRequestHandler<UpdateItemCommand>
     {
@@ -17,6 +18,7 @@ public record UpdateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
             var factory = sp.GetRequiredService<IUnitOfWorkFactory>();
             using var unitOfWork = factory.CreateUnitOfWork();
             var repo = unitOfWork.GetRepo<Item>();
+            var itemIngredientRepo = unitOfWork.GetRepo<ItemIngredient>();
 
             string? imgBase64 = null;
 
@@ -26,21 +28,19 @@ public record UpdateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
             }
 
             var item = await repo.GetAsync(request.Model.Id, cancellationToken);
+            var itemIngredients = request.ItemIngredients.Select(s => ItemIngredient.Create(
+                id: s.Id,
+                quantityRequired: s.QuantityRequired,
+                itemId: s.ItemId,
+                ingredientId: s.IngredientId));
 
             if (item is null)
             {
                 return;
             }
 
-            var ingredients = request.Model.ItemIngredients.Select(s => ItemIngredient.Create(
-               quantityRequired: s.QuantityRequired,
-               itemId: default,
-               item: item,
-               ingredientId: s.IngredientId));
-
-            item.UpdateItems(ingredients);
-
             item.Update(request.Model.Name, request.Model.Price, imgBase64 ?? item.ImgBase64);
+            await item.UpdateItems(itemIngredients, async (IEnumerable<ItemIngredient> items) => await itemIngredientRepo.DeleteRangeAsync(items, cancellationToken));
             await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }

@@ -82,15 +82,15 @@
     {
         try
         {
-            model.ItemIngredients = settingItemIngredientsElement.itemIngredients;
+            var ingredients = settingItemIngredientsElement.itemIngredients;
 
             if (string.IsNullOrEmpty(Id))
             {
-                await itemService.CreateItem(model, file);
+                await itemService.CreateItem(model, file, ingredients);
             }
             else
             {
-                await itemService.UpdateItem(model, file);
+                await itemService.UpdateItem(model, file, ingredients);
             }
 
             nav.NavigateTo("settings");
