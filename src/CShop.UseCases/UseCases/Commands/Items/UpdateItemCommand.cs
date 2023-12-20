@@ -26,7 +26,7 @@ public record UpdateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
             }
 
             var item = await repo.GetAsync(request.Model.Id, cancellationToken);
-            
+
             if (item is null)
             {
                 return;
@@ -42,17 +42,7 @@ public record UpdateItemCommand(ItemDto Model, IBrowserFile? File) : IRequest
 
             item.Update(request.Model.Name, request.Model.Price, imgBase64 ?? item.ImgBase64);
             await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
-
-            try
-            {
-                await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
+            await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

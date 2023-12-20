@@ -21,10 +21,6 @@ public class Item : AggregateRoot
         Img = imgBase64;
     }
 
-    private Item() : this(string.Empty, 0, null)
-    {
-    }
-
     public static Item Create(
         string name,
         decimal price,

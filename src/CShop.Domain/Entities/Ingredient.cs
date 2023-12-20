@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 using CShop.Domain.Primitives;
 

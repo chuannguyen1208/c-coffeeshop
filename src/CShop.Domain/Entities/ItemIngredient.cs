@@ -4,10 +4,9 @@ namespace CShop.Domain.Entities;
 public class ItemIngredient : AggregateRoot
 {
     private ItemIngredient(
-        Guid id,
         int quantityRequired,
         Guid itemId,
-        Guid ingredientId) : base(id)
+        Guid ingredientId) : base(Guid.Empty)
     {
         QuantityRequired = quantityRequired;
         ItemId = itemId;
@@ -26,10 +25,10 @@ public class ItemIngredient : AggregateRoot
         int quantityRequired,
         Guid itemId,
         Guid ingredientId,
-        Item item = null,
-        Ingredient ingredient = null)
+        Item item = default!,
+        Ingredient ingredient = default!)
     {
-        var entity = new ItemIngredient(Guid.NewGuid(), quantityRequired, itemId, ingredientId)
+        var entity = new ItemIngredient(quantityRequired, itemId, ingredientId)
         {
             Item = item,
             Ingredient = ingredient

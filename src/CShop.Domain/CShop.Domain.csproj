@@ -8,5 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="MediatR" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
     </ItemGroup>
 </Project>
