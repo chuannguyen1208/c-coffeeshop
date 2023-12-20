@@ -11,7 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfras(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContextFactory<ApplicationDbContext>(
-            options => options.UseSqlServer(configuration.GetConnectionString("Default")));
+            options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("Default")));
 
         services.AddTransient<IUnitOfWorkFactory, UnitOfWorkFactory>();
 

@@ -4,17 +4,18 @@ namespace CShop.Domain.Entities;
 public class OrderItem : AggregateRoot
 {
     private OrderItem(
-        Guid id,
         Guid orderId,
         Guid itemId,
         int quantity,
-        decimal price) : base(id)
+        decimal price) : this()
     {
         OrderId = orderId;
         ItemId = itemId;
         Quantity = quantity;
         Price = price;
     }
+
+    protected OrderItem() : base(Guid.Empty) { }
 
     public Guid ItemId { get; private set; }
     public Guid OrderId { get; set; }
@@ -30,7 +31,7 @@ public class OrderItem : AggregateRoot
         int quantity,
         decimal price)
     {
-        var entity = new OrderItem(Guid.NewGuid(), orderId, itemId, quantity, price);
+        var entity = new OrderItem(orderId, itemId, quantity, price);
         return entity;
     }
 

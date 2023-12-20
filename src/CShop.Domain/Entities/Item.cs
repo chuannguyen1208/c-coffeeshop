@@ -4,17 +4,19 @@ using CShop.Domain.Primitives;
 namespace CShop.Domain.Entities;
 public class Item : AggregateRoot
 {
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     public decimal Price { get; private set; }
     public string? Img { get; private set; }
     public string? ImgBase64 { get; private set; }
 
     public virtual ICollection<ItemIngredient> ItemIngredients { get; private set; } = [];
 
+    protected Item() : base(Guid.Empty) { }
+
     private Item(
         string name,
         decimal price,
-        string? imgBase64) : base(Guid.NewGuid())
+        string? imgBase64) : this()
     {
         Name = name;
         Price = price;

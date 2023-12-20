@@ -4,13 +4,14 @@ namespace CShop.Domain.Entities;
 public class Order : AggregateRoot
 {
     private Order(
-        Guid id,
         OrderStatus status,
-        string? failedReason) : base(id)
+        string? failedReason) : this()
     {
         Status = status;
         FailedReason = failedReason;
     }
+
+    protected Order() : base(Guid.Empty) { }
 
     public OrderStatus Status { get; private set; }
     public string? FailedReason { get; private set; }
@@ -22,7 +23,7 @@ public class Order : AggregateRoot
         OrderStatus status,
         string? failedReason = null)
     {
-        var entity = new Order(Guid.NewGuid(), status, failedReason);
+        var entity = new Order(status, failedReason);
         return entity;
     }
 

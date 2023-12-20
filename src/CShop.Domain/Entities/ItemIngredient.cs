@@ -3,10 +3,12 @@
 namespace CShop.Domain.Entities;
 public class ItemIngredient : AggregateRoot
 {
+    protected ItemIngredient() : base(Guid.Empty) { }
+
     private ItemIngredient(
         int quantityRequired,
         Guid itemId,
-        Guid ingredientId) : base(Guid.Empty)
+        Guid ingredientId) : this()
     {
         QuantityRequired = quantityRequired;
         ItemId = itemId;
