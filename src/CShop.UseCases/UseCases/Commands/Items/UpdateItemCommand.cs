@@ -28,11 +28,6 @@ public record UpdateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             }
 
             var item = await repo.GetAsync(request.Model.Id, cancellationToken);
-            var itemIngredients = request.ItemIngredients.Select(s => ItemIngredient.Create(
-                id: s.Id,
-                quantityRequired: s.QuantityRequired,
-                itemId: s.ItemId,
-                ingredientId: s.IngredientId));
 
             if (item is null)
             {
@@ -40,7 +35,26 @@ public record UpdateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             }
 
             item.Update(request.Model.Name, request.Model.Price, imgBase64 ?? item.ImgBase64);
-            await item.UpdateItems(itemIngredients, async (IEnumerable<ItemIngredient> items) => await itemIngredientRepo.DeleteRangeAsync(items, cancellationToken));
+
+            foreach (var itemIngredient in request.ItemIngredients)
+            {
+                if (itemIngredient.Id == Guid.Empty)
+                {
+                    item.AddItem(itemIngredient.IngredientId, itemIngredient.QuantityRequired);
+                    continue;
+                }
+
+                item.UpdateItem(itemIngredient.Id, itemIngredient.QuantityRequired);
+            }
+
+            var deleteItemIngredientIds = item.ItemIngredients.Where(s => 
+                !request.ItemIngredients.Any(i => i.Id == s.Id)).Select(s => s.Id).ToList();
+
+            foreach (var deleteItemIngredientId in deleteItemIngredientIds)
+            {
+                item.DeleteItem(deleteItemIngredientId);
+            }
+
             await repo.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
             await unitOfWork.SaveChangesAsync().ConfigureAwait(false);
         }

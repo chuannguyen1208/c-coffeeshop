@@ -25,7 +25,7 @@ public class GetItemsQuery : IRequest<IEnumerable<ItemDto>>
             foreach (var entity in entities.AsEnumerable())
             {
                 var dto = mapper.Map<ItemDto>(entity);
-                dto.QuantityRemainingEst = entity.GetQuantityRemainingEst(ingredients);
+                dto.QuantityRemainingEst = 0;
 
                 res.Add(dto);
             }

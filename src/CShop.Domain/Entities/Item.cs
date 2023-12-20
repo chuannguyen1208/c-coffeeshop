@@ -4,24 +4,23 @@ using CShop.Domain.Primitives;
 namespace CShop.Domain.Entities;
 public class Item : AggregateRoot
 {
-    public string Name { get; private set; } = string.Empty;
-    public decimal Price { get; private set; }
-    public string? Img { get; private set; }
-    public string? ImgBase64 { get; private set; }
-
-    public virtual ICollection<ItemIngredient> ItemIngredients { get; private set; } = [];
-
-    protected Item() : base(Guid.Empty) { }
+    protected Item() : this(string.Empty, 0, null) { }
 
     private Item(
         string name,
         decimal price,
-        string? imgBase64) : this()
+        string? imgBase64) : base(Guid.Empty)
     {
         Name = name;
         Price = price;
         Img = imgBase64;
     }
+
+    public string Name { get; private set; }
+    public decimal Price { get; private set; }
+    public string? Img { get; private set; }
+    public string? ImgBase64 { get; private set; }
+    public virtual ICollection<ItemIngredient> ItemIngredients { get; private set; } = [];
 
     public static Item Create(
         string name,
@@ -43,36 +42,29 @@ public class Item : AggregateRoot
         ImgBase64 = imgBase64;
     }
 
-    public async Task UpdateItems(
-        IEnumerable<ItemIngredient> itemIngredients,
-        Func<IEnumerable<ItemIngredient>, Task>? deleteFunc = null)
+    public void AddItem(Guid ingredientId, int quantityRequired)
     {
-        var deleteItems = ItemIngredients.Where(s => !itemIngredients.Any(i => i.Id == s.Id));
-        if (deleteFunc != null)
-        {
-            await deleteFunc(deleteItems);
-        }
+        var item = ItemIngredient.Create(
+            quantityRequired: quantityRequired,
+            ingredientId: ingredientId,
+            itemId: Id,
+            item: this);
 
-        foreach (var item in itemIngredients)
-        {
-            var existing = ItemIngredients.FirstOrDefault(s => s.Id == item.Id);
-
-            if (existing is null)
-            {
-                ItemIngredients.Add(item);
-                continue;
-            }
-
-            existing.Update(item.QuantityRequired);
-        }
+        ItemIngredients.Add(item);
     }
 
-    public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
+    public void UpdateItem(Guid id, int quantityRequired)
     {
-        return 0;
+        var item = ItemIngredients.First(x => x.Id == id);
+        item.Update(quantityRequired);
     }
 
-    public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
+    public void DeleteItem(Guid id)
     {
+        var itemIngredient = ItemIngredients.FirstOrDefault(s => s.Id == id);
+        if (itemIngredient != null)
+        {
+            ItemIngredients.Remove(itemIngredient);
+        }
     }
 }

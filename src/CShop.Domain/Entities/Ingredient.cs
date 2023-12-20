@@ -10,7 +10,7 @@ public class Ingredient : AggregateRoot
     private Ingredient(
         string name,
         int stockLevel,
-        string stockName) : base(Guid.NewGuid())
+        string stockName) : base(Guid.Empty)
     {
         Name = name;
         StockLevel = stockLevel;

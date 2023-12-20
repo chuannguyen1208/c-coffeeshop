@@ -25,13 +25,12 @@ public record CreateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
             }
 
             var item = Item.Create(request.Model.Name, request.Model.Price, imgBase64);
-            var itemIngredients = request.ItemIngredients.Select(s => ItemIngredient.Create(
-                id: Guid.NewGuid(),
-                quantityRequired: s.QuantityRequired,
-                itemId: s.ItemId,
-                ingredientId: s.IngredientId));
 
-            await item.UpdateItems(itemIngredients);
+            foreach (var itemIngredient in request.ItemIngredients)
+            {
+                item.AddItem(itemIngredient.IngredientId, itemIngredient.QuantityRequired);
+            }
+
             await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
         }
