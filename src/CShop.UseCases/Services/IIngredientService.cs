@@ -8,7 +8,8 @@ namespace CShop.UseCases.Services;
 public interface IIngredientService
 {
     Task<IEnumerable<IngredientDto>> GetIngredients();
-    Task UpsertIngredient(IngredientDto ingredient);
+    Task CreateIngredient(IngredientDto ingredient);
+    Task UpdateIngredient(IngredientDto ingredient);
     Task DeleteIngredient(Guid id);
     Task<IngredientDto> GetIngredient(Guid id);
 }
@@ -31,8 +32,13 @@ internal class IngredientService(IMediator mediator) : IIngredientService
         return res;
     }
 
-    public async Task UpsertIngredient(IngredientDto ingredient)
+    public async Task CreateIngredient(IngredientDto ingredient)
     {
-        await mediator.Send(new UpsertIngredientCommand(ingredient));
+        await mediator.Send(new CreateIngredientCommand(ingredient));
+    }
+
+    public async Task UpdateIngredient(IngredientDto ingredient)
+    {
+        await mediator.Send(new UpdateIngredientCommand(ingredient));
     }
 }

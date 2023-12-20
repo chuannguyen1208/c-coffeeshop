@@ -53,7 +53,12 @@
     {
         try
         {
-            await ingredientService.UpsertIngredient(model);
+            var task = string.IsNullOrEmpty(Id) ?
+                ingredientService.CreateIngredient(model)
+                : ingredientService.UpdateIngredient(model);
+
+            await task;
+
             nav.NavigateTo("settings");
         }
         catch (Exception ex)

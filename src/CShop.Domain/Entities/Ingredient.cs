@@ -5,21 +5,21 @@ using CShop.Domain.Primitives;
 namespace CShop.Domain.Entities;
 public class Ingredient : AggregateRoot
 {
-    protected Ingredient() : base(Guid.Empty) { }
+    protected Ingredient() : this(string.Empty, 0, string.Empty) { }
 
     private Ingredient(
         string name,
         int stockLevel,
-        string stockName) : this()
+        string stockName) : base(Guid.NewGuid())
     {
         Name = name;
         StockLevel = stockLevel;
         StockName = stockName;
     }
 
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; }
     public int StockLevel { get; private set; }
-    public string StockName { get; private set; } = string.Empty;
+    public string StockName { get; private set; }
 
     [Timestamp]
     public byte[] Version { get; private set; } = [];
