@@ -1,6 +1,15 @@
 ﻿namespace CShop.Domain.Primitives;
 
-public class Entity(Guid id)
+public class Entity
 {
-    public Guid Id { get; private set; } = id;
+    public Guid Id { get; private set; }
+
+    protected Entity()
+    {
+    }
+
+    protected Entity(Guid id)
+    {
+        Id = id;
+    }
 }

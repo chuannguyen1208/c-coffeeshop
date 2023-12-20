@@ -5,32 +5,40 @@ public class ItemIngredient : AggregateRoot
 {
     private ItemIngredient(
         Guid id,
+        int quantityRequired,
         Guid itemId,
-        Guid ingredientId,
-        int quantityRequired) : base(id)
+        Guid ingredientId) : base(id)
     {
+        QuantityRequired = quantityRequired;
         ItemId = itemId;
         IngredientId = ingredientId;
-        QuantityRequired = quantityRequired;
     }
-
-    public Guid ItemId { get; private set; }
-    public Guid IngredientId { get; private set; }
+    
     public int QuantityRequired { get; private set; }
 
+    public Guid ItemId { get; set; }
     public virtual Item Item { get; private set; } = default!;
+
+    public Guid IngredientId { get; set; }
     public virtual Ingredient Ingredient { get; private set; } = default!;
 
     public static ItemIngredient Create(
+        int quantityRequired,
         Guid itemId,
         Guid ingredientId,
-        int quantityRequired)
+        Item item = default!,
+        Ingredient ingredient = default!)
     {
-        var entity = new ItemIngredient(Guid.NewGuid(), itemId, ingredientId, quantityRequired);
+        var entity = new ItemIngredient(Guid.NewGuid(), quantityRequired, itemId, ingredientId)
+        {
+            Item = item,
+            Ingredient = ingredient
+        };
+
         return entity;
     }
 
-    internal void Update(int quantityRequired)
+    public void Update(int quantityRequired)
     {
         QuantityRequired = quantityRequired;
     }

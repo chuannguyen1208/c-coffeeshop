@@ -17,8 +17,9 @@ public record OrderUpsertCommand(OrderDto Model) : IRequest<OrderDto>
             var repo = unitOfwork.GetRepo<Order>();
 
             var order = await repo.GetAsync(request.Model.Id, cancellationToken).ConfigureAwait(false);
-            var orderItems = new List<OrderItem>();
             var dto = request.Model;
+
+            var orderItems = dto.OrderItems.Select(s => OrderItem.Create(dto.Id, s.ItemId, s.Quantity, s.Price));
 
             if (order is null)
             {

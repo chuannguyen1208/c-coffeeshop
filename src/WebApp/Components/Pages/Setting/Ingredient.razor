@@ -1,11 +1,11 @@
 ﻿@page "/settings/ingredient"
-@page "/settings/ingredient/{Id:Guid}"
+@page "/settings/ingredient/{Id}"
 @rendermode InteractiveServer
 @inject IIngredientService ingredientService
 @inject IToastService toast
 @inject NavigationManager nav
 
-<PageTitle>@(Id.HasValue ? "New ingredient" : "Ingredient detail")</PageTitle>
+<PageTitle>Ingredient</PageTitle>
 
 <div class="row">
     <div class="col-5 col-xs-12 p-2">
@@ -34,15 +34,19 @@
 </div>
 
 @code {
-    [Parameter] public Guid? Id { get; set; }
+    [Parameter] public string? Id { get; set; }
     IngredientDto model = new IngredientDto { Name = "", StockName = "" };
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id.HasValue)
+        var hasId = Guid.TryParse(Id, out var id);
+
+        if (!hasId)
         {
-            model = await ingredientService.GetIngredient(Id.Value);
+            return;
         }
+
+        model = await ingredientService.GetIngredient(id);
     }
 
     async Task Save()

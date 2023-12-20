@@ -28,44 +28,38 @@ public class Item : AggregateRoot
         string name,
         decimal price,
         string? img = null,
-        string? imgBase64 = null,
-        IEnumerable<ItemIngredient>? itemIngredients = null)
+        string? imgBase64 = null)
     {
         var item = new Item(Guid.NewGuid(), name, price, img, imgBase64);
-        item.UpdateItems(itemIngredients ?? []);
         item.RaiseDomainEvent(new ItemCreatedDomainEvent(item.Id));
         return item;
     }
 
-    public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
-    {
-        throw new NotImplementedException();
-    }
-
     public void Update(
-        string name, 
-        decimal price, 
-        string? img = null, 
-        string? imgBase64 = null,
-        IEnumerable<ItemIngredient>? itemIngredients = null)
+        string name,
+        decimal price,
+        string? img = null,
+        string? imgBase64 = null)
     {
         Name = name;
         Price = price;
         Img = img;
         ImgBase64 = imgBase64;
-        UpdateItems(itemIngredients ?? []);
     }
 
-    public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
+    public void UpdateItems(IEnumerable<ItemIngredient> itemIngredients)
     {
-        throw new NotImplementedException();
-    }
+        var deleteIngredients = ItemIngredients.Where(s => itemIngredients.Any(s => s.Id == s.Id));
 
-    private void UpdateItems(IEnumerable<ItemIngredient> itemIngredients)
-    {
+        foreach (var ingredient in deleteIngredients)
+        {
+            ItemIngredients.Remove(ingredient);
+        }
+
         foreach (var itemIngredient in itemIngredients ?? [])
         {
             var existingItemIngredient = ItemIngredients.FirstOrDefault(s => s.Id == itemIngredient.Id);
+
             if (existingItemIngredient is null)
             {
                 ItemIngredients.Add(itemIngredient);
@@ -75,5 +69,15 @@ public class Item : AggregateRoot
                 existingItemIngredient.Update(itemIngredient.QuantityRequired);
             }
         }
+    }
+
+    public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
+    {
+        throw new NotImplementedException();
     }
 }

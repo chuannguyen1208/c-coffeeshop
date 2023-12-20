@@ -5,10 +5,12 @@ public class OrderItem : AggregateRoot
 {
     private OrderItem(
         Guid id,
+        Guid orderId,
         Guid itemId,
         int quantity,
         decimal price) : base(id)
     {
+        OrderId = orderId;
         ItemId = itemId;
         Quantity = quantity;
         Price = price;
@@ -23,11 +25,12 @@ public class OrderItem : AggregateRoot
     public virtual Order Order { get; private set; } = default!;
 
     public static OrderItem Create(
+        Guid orderId,
         Guid itemId,
         int quantity,
         decimal price)
     {
-        var entity = new OrderItem(Guid.NewGuid(), itemId, quantity, price);
+        var entity = new OrderItem(Guid.NewGuid(), orderId, itemId, quantity, price);
         return entity;
     }
 
