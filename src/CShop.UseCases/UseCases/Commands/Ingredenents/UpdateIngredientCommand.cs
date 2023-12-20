@@ -4,16 +4,13 @@ using CShop.UseCases.Infras;
 
 using MediatR;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CShop.UseCases.UseCases.Commands.Ingredenents;
 public record UpdateIngredientCommand(IngredientDto Ingredient) : IRequest
 {
-    private class Handler(IServiceProvider sp) : IRequestHandler<UpdateIngredientCommand>
+    private class Handler(IUnitOfWorkFactory factory) : IRequestHandler<UpdateIngredientCommand>
     {
         public async Task Handle(UpdateIngredientCommand request, CancellationToken cancellationToken)
         {
-            var factory = sp.GetRequiredService<IUnitOfWorkFactory>();
             using var unitOfWork = factory.CreateUnitOfWork();
             var repo = unitOfWork.GetRepo<Ingredient>();
 
