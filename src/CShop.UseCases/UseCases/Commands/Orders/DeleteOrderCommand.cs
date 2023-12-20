@@ -4,11 +4,11 @@ using CShop.UseCases.Infras;
 using MediatR;
 
 namespace CShop.UseCases.UseCases.Commands.Orders;
-public record OrderDeleteCommand(Guid Id) : IRequest
+public record DeleteOrderCommand(Guid Id) : IRequest
 {
-    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<OrderDeleteCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<DeleteOrderCommand>
     {
-        public async Task Handle(OrderDeleteCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Order>();

@@ -3,15 +3,11 @@
 namespace CShop.Domain.Entities;
 public class Order : AggregateRoot
 {
-    private Order(
-        OrderStatus status,
-        string? failedReason) : this()
+    protected Order(OrderStatus status, string? failedReason) : base(Guid.Empty)
     {
         Status = status;
         FailedReason = failedReason;
     }
-
-    protected Order() : base(Guid.Empty) { }
 
     public OrderStatus Status { get; private set; }
     public string? FailedReason { get; private set; }
@@ -28,29 +24,43 @@ public class Order : AggregateRoot
     }
 
     public void Update(
-        OrderStatus status, 
+        OrderStatus status,
         string? failedReason = null)
     {
         Status = status;
         FailedReason = failedReason;
     }
 
-    public void SetItems(IEnumerable<OrderItem> items)
+    public void AddOrderItem(Guid itemId, int quantity, decimal price)
     {
-        foreach (var item in items)
+        var item = OrderItem.Create(
+            orderId: Id,
+            order: this,
+            itemId: itemId,
+            quantity: quantity,
+            price: price);
+        OrderItems.Add(item);
+    }
+
+    public void UpdateOrderItem(Guid id, int quantity, decimal price)
+    {
+        var item = OrderItems.FirstOrDefault(s => s.Id == id);
+        if (item is null)
         {
-            var existingOrderItem = OrderItems.FirstOrDefault(s => s.Id == item.Id);
-
-            if (existingOrderItem is null)
-            {
-                OrderItems.Add(item);
-                TotalPrice += item.Price;
-                continue;
-            }
-
-            TotalPrice = TotalPrice - existingOrderItem.Price + item.Price;
-            existingOrderItem.Update(item.Price, item.Quantity);
+            return;
         }
+        item.Update(quantity: quantity, price: price);
+    }
+
+    public void DeleteOrderItem(Guid orderItemId)
+    {
+        var item = OrderItems.FirstOrDefault(s => s.Id == orderItemId);
+        if (item is null)
+        {
+            return;
+        }
+
+        OrderItems.Remove(item);
     }
 }
 

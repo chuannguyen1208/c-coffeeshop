@@ -3,17 +3,14 @@ using CShop.UseCases.Infras;
 
 using MediatR;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CShop.UseCases.UseCases.Commands.Orders;
-public record OrderUpdateStatusCommand(Guid OrderId, OrderStatus Status) : IRequest
+public record UpdateOrderStatusCommand(Guid OrderId, OrderStatus Status) : IRequest
 {
-    private class Handler(IServiceProvider sp) : IRequestHandler<OrderUpdateStatusCommand>
+    private class Handler(IUnitOfWorkFactory factory) : IRequestHandler<UpdateOrderStatusCommand>
     {
-        public async Task Handle(OrderUpdateStatusCommand request, CancellationToken cancellationToken)
+        public async Task Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
         {
-            var unitOfWorkFactory = sp.GetRequiredService<IUnitOfWorkFactory>();
-            using var unitOfWork = unitOfWorkFactory.CreateUnitOfWork();
+            using var unitOfWork = factory.CreateUnitOfWork();
             var repo = unitOfWork.GetRepo<Order>();
 
             var order = await repo.GetAsync(request.OrderId, cancellationToken).ConfigureAwait(false);

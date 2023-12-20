@@ -19,7 +19,7 @@ internal class OrderService(IMediator mediator) : IOrderService
 {
     public async Task DeleteOrder(Guid id)
     {
-        await mediator.Send(new OrderDeleteCommand(id));
+        await mediator.Send(new DeleteOrderCommand(id));
     }
 
     public async Task<OrderDto> GetOrder(Guid id)
@@ -35,11 +35,11 @@ internal class OrderService(IMediator mediator) : IOrderService
 
     public async Task UpdateOrderStatus(Guid id, OrderStatus status)
     {
-        await mediator.Send(new OrderUpdateStatusCommand(id, status));
+        await mediator.Send(new UpdateOrderStatusCommand(id, status));
     }
 
     public async Task<OrderDto> UpsertOrder(OrderDto model)
     {
-        return await mediator.Send(new OrderUpsertCommand(model));
+        return await mediator.Send(new CreateOrderCommand(model));
     }
 }
