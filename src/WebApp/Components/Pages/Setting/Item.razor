@@ -1,12 +1,12 @@
 ﻿@using WebApp.Components.Pages.Setting.Components.Item
 @page "/settings/item"
-@page "/settings/item/{Id:Guid}"
+@page "/settings/item/{Id}"
 @rendermode InteractiveServer
 @inject IItemService itemService
 @inject IToastService toast
 @inject NavigationManager nav
 
-<PageTitle>@(Id.HasValue ? "New item" : "Item detail")</PageTitle>
+<PageTitle>Item</PageTitle>
 
 <div class="row">
     <div class="col-5 col-xs-12 p-2">
@@ -32,7 +32,7 @@
                     <div class="mb-3">
                         <label class="form-label">Ingredients</label>
                         <div>
-                            <ItemIngredients ItemId="Id" @ref="settingItemIngredientsElement"></ItemIngredients>
+                            <ItemIngredients ItemId="model.Id" @ref="settingItemIngredientsElement"></ItemIngredients>
                         </div>
                     </div>
                     <div class="mb-3"></div>
@@ -50,14 +50,18 @@
     ItemIngredients settingItemIngredientsElement = default!;
 
     [Parameter] 
-    public Guid? Id { get; set; }
+    public string? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id.HasValue)
+        var hasId = Guid.TryParse(Id, out var id);
+
+        if (!hasId)
         {
-            model = await itemService.GetItem(Id.Value);
+            return;
         }
+
+        model = await itemService.GetItem(id);
     }
 
     async Task OnFileInput(InputFileChangeEventArgs e)
@@ -79,7 +83,16 @@
         try
         {
             model.ItemIngredients = settingItemIngredientsElement.itemIngredients;
-            await itemService.UpsertItem(model, file);
+
+            if (string.IsNullOrEmpty(Id))
+            {
+                await itemService.CreateItem(model, file);
+            }
+            else
+            {
+                await itemService.UpdateItem(model, file);
+            }
+
             nav.NavigateTo("settings");
         }
         catch (Exception ex)

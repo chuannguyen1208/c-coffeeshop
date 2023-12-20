@@ -10,7 +10,8 @@ namespace CShop.UseCases.Services;
 
 public interface IItemService
 {
-    Task UpsertItem(ItemDto model, IBrowserFile? file);
+    Task CreateItem(ItemDto model, IBrowserFile? file);
+    Task UpdateItem(ItemDto model, IBrowserFile? file);
     Task DeleteItem(Guid id);
     Task<ItemDto> GetItem(Guid id);
     Task<IEnumerable<ItemDto>> GetItems();
@@ -41,8 +42,13 @@ internal class ItemService(IMediator mediator) : IItemService
         return res;
     }
 
-    public async Task UpsertItem(ItemDto model, IBrowserFile? file)
+    public async Task CreateItem(ItemDto model, IBrowserFile? file)
     {
-        await mediator.Send(new UpsertItemCommand(model, file));
+        await mediator.Send(new CreateItemCommand(model, file));
+    }
+
+    public async Task UpdateItem(ItemDto model, IBrowserFile? file)
+    {
+        await mediator.Send(new UpdateItemCommand(model, file));
     }
 }

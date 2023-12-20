@@ -12,25 +12,25 @@ public class Item : AggregateRoot
     public virtual ICollection<ItemIngredient> ItemIngredients { get; private set; } = [];
 
     private Item(
-        Guid id,
         string name,
         decimal price,
-        string? img,
-        string? imgBase64) : base(id)
+        string? imgBase64) : base(Guid.NewGuid())
     {
         Name = name;
         Price = price;
-        Img = img;
         Img = imgBase64;
+    }
+
+    private Item() : this(string.Empty, 0, null)
+    {
     }
 
     public static Item Create(
         string name,
         decimal price,
-        string? img = null,
         string? imgBase64 = null)
     {
-        var item = new Item(Guid.NewGuid(), name, price, img, imgBase64);
+        var item = new Item(name, price, imgBase64);
         item.RaiseDomainEvent(new ItemCreatedDomainEvent(item.Id));
         return item;
     }
@@ -38,46 +38,42 @@ public class Item : AggregateRoot
     public void Update(
         string name,
         decimal price,
-        string? img = null,
         string? imgBase64 = null)
     {
         Name = name;
         Price = price;
-        Img = img;
         ImgBase64 = imgBase64;
     }
 
     public void UpdateItems(IEnumerable<ItemIngredient> itemIngredients)
     {
-        var deleteIngredients = ItemIngredients.Where(s => itemIngredients.Any(s => s.Id == s.Id));
+        var deleteItems = ItemIngredients.Where(s => itemIngredients.Any(i => i.Id == s.Id));
 
-        foreach (var ingredient in deleteIngredients)
+        foreach (var item in deleteItems)
         {
-            ItemIngredients.Remove(ingredient);
+            ItemIngredients.Remove(item);
         }
 
-        foreach (var itemIngredient in itemIngredients ?? [])
+        foreach (var item in itemIngredients)
         {
-            var existingItemIngredient = ItemIngredients.FirstOrDefault(s => s.Id == itemIngredient.Id);
+            var existingItem = ItemIngredients.FirstOrDefault(s => s.Id == item.Id);
 
-            if (existingItemIngredient is null)
+            if (existingItem is null)
             {
-                ItemIngredients.Add(itemIngredient);
+                ItemIngredients.Add(item);
+                continue;
             }
-            else
-            {
-                existingItemIngredient.Update(itemIngredient.QuantityRequired);
-            }
+
+            existingItem.Update(item.QuantityRequired);
         }
     }
 
     public int GetQuantityRemainingEst(IEnumerable<Ingredient> ingredients)
     {
-        throw new NotImplementedException();
+        return 0;
     }
 
     public void PrepareQuantity(IEnumerable<Ingredient> ingredients, int quantity)
     {
-        throw new NotImplementedException();
     }
 }

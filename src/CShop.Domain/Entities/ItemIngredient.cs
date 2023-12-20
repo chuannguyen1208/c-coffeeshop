@@ -26,8 +26,8 @@ public class ItemIngredient : AggregateRoot
         int quantityRequired,
         Guid itemId,
         Guid ingredientId,
-        Item item = default!,
-        Ingredient ingredient = default!)
+        Item item = null,
+        Ingredient ingredient = null)
     {
         var entity = new ItemIngredient(Guid.NewGuid(), quantityRequired, itemId, ingredientId)
         {
