@@ -40,6 +40,11 @@ public class Ingredient : AggregateRoot
 
     internal void Subtract(int stockLevel)
     {
+        if (StockLevel < stockLevel)
+        {
+            throw new ArgumentException($"Ingredient {Name} is not enough.");
+        }
+
         StockLevel -= stockLevel;
     }
 }

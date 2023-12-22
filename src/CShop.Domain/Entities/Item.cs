@@ -70,11 +70,7 @@ public class Item : AggregateRoot
     {
         foreach (var itemIngredient in ItemIngredients)
         {
-            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId);
-            if (ingredient is null)
-            {
-                throw new ArgumentException($"{nameof(ingredient)} quantity insufficent.");
-            }
+            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId) ?? throw new ArgumentException($"Ingredient not found");
 
             var quantityRequired = itemIngredient.QuantityRequired * quantity;
             ingredient.Subtract(quantityRequired);
