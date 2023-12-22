@@ -37,4 +37,9 @@ public class Ingredient : AggregateRoot
         StockLevel = stockLevel;
         StockName = stockName;
     }
+
+    internal void Subtract(int stockLevel)
+    {
+        StockLevel -= stockLevel;
+    }
 }

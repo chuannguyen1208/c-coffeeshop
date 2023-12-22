@@ -11,6 +11,7 @@ public class OrderSubmittedConsumer() : IConsumer<OrderSubmitted>
     public async Task Consume(ConsumeContext<OrderSubmitted> context)
     {
         Log.Information($"Order submitted: {context.Message.OrderId}");
+
         await Task.CompletedTask;
     }
 }

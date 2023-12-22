@@ -1,4 +1,6 @@
-﻿using CShop.Domain.Primitives;
+﻿using System.Runtime.InteropServices;
+
+using CShop.Domain.Primitives;
 
 namespace CShop.Domain.Entities;
 public class Item : AggregateRoot
@@ -54,7 +56,7 @@ public class Item : AggregateRoot
         var item = ItemIngredients.First(x => x.Id == id);
         item.Update(quantityRequired);
     }
-
+     
     public void DeleteItem(Guid id)
     {
         var itemIngredient = ItemIngredients.FirstOrDefault(s => s.Id == id);
@@ -62,5 +64,42 @@ public class Item : AggregateRoot
         {
             ItemIngredients.Remove(itemIngredient);
         }
+    }
+
+    public void PrepareItems(IEnumerable<Ingredient> ingredients, int quantity = 1)
+    {
+        foreach (var itemIngredient in ItemIngredients)
+        {
+            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId);
+            if (ingredient is null)
+            {
+                throw new ArgumentException($"{nameof(ingredient)} quantity insufficent.");
+            }
+
+            var quantityRequired = itemIngredient.QuantityRequired * quantity;
+            ingredient.Subtract(quantityRequired);
+        }
+    }
+
+    public int GetQuantityEst(IEnumerable<Ingredient> ingredients)
+    {
+        var res = -1;
+
+        foreach (var itemIngredient in ItemIngredients)
+        {
+            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId);
+            if (ingredient is null)
+            {
+                break;
+            }
+
+            var quantity = ingredient.StockLevel / itemIngredient.QuantityRequired;
+            if (quantity < res || res == -1)
+            {
+                res = quantity;
+            }
+        }
+
+        return res;
     }
 }
