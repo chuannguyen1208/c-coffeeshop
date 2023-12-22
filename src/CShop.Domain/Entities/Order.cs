@@ -31,6 +31,8 @@ public class Order : AggregateRoot
     {
         Status = status;
         FailedReason = failedReason;
+
+        RaiseDomainEvent(new OrderUpdatedEvent(this));
     }
 
     public void AddOrderItem(Guid itemId, int quantity, decimal price)

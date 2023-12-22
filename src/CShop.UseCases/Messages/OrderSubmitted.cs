@@ -22,7 +22,7 @@ public class OrderSubmittedConsumer(IUnitOfWorkFactory factory) : IConsumer<Orde
         var ingredientRepo = unitOfWork.GetRepo<Ingredient>();
         var cancellation = CancellationToken.None;
 
-        var order = await orderRepo.GetAsync(context.Message.OrderId, cancellation) ?? throw new Exception("");
+        var order = await orderRepo.GetAsync(context.Message.OrderId, cancellation) ?? throw new Exception($"Order {context.Message.OrderId} not found.");
         var ingredients = await ingredientRepo.Entities.AsNoTracking().ToListAsync();
 
         try
