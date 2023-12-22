@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
+        <PackageReference Include="MediatR" />
     </ItemGroup>
 </Project>

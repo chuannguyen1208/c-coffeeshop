@@ -1,10 +1,18 @@
-﻿namespace CShop.Domain.Primitives;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CShop.Domain.Primitives;
 public abstract class AggregateRoot(Guid id) : Entity(id)
 {
-    private readonly List<IDomainEvent> _events = [];
+    [NotMapped]
+    public List<IDomainEvent> DomainEvents { get; init; } = [];
+
+    public void ClearDomainEvents()
+    {
+        DomainEvents.Clear();
+    }
 
     protected void RaiseDomainEvent(IDomainEvent domainEvent)
     {
-        _events.Add(domainEvent);
+        DomainEvents.Add(domainEvent);
     }
 }

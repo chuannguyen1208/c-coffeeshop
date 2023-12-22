@@ -1,2 +1,2 @@
 ﻿namespace CShop.UseCases.Messages;
-public record OrderUpdated(Guid OrderId);
+internal record OrderUpdated(Guid OrderId);

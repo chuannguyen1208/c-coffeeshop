@@ -6,27 +6,23 @@ using WebApp.Interop;
 using Tools.Messaging;
 using Tools.Logging;
 using System.Reflection;
-using CShop.UseCases.Messages.Publishers;
-using WebApp.Messages.Publishers;
 using WebApp.Services;
 using CShop.UseCases.Services;
+using CShop.UseCases.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddUseCases()
     .AddInfras(builder.Configuration)
     .AddSerilogLogging(builder.Configuration)
-    .AddAsyncProcessing(builder.Configuration, Assembly.GetExecutingAssembly());
+    .AddAsyncProcessing(builder.Configuration, typeof(OrderSubmitted).Assembly);
 
 builder.Services.AddScoped<OrderState>();
 builder.Services.AddScoped<OrderKitchenState>();
 builder.Services.AddScoped<IToastService, CommonInterop>();
 builder.Services.AddScoped<ICommonInterop, CommonInterop>();
-builder.Services.AddScoped<IOrderPublisher, OrderPublisher>();
 
 builder.Services.AddTransient<IFileUploader, FileUploader>();
-builder.Services.AddTransient<ICounterService, CounterService>();
-builder.Services.AddTransient<IKitchenService, KitchenService>();
 
 builder.Services.AddSingleton<OrderBridge>();
 

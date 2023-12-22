@@ -1,4 +1,5 @@
-﻿using CShop.Domain.Primitives;
+﻿using CShop.Domain.Events;
+using CShop.Domain.Primitives;
 
 namespace CShop.Domain.Entities;
 public class Order : AggregateRoot
@@ -20,6 +21,7 @@ public class Order : AggregateRoot
         string? failedReason = null)
     {
         var entity = new Order(status, failedReason);
+        entity.RaiseDomainEvent(new OrderCreatedEvent(entity));
         return entity;
     }
 

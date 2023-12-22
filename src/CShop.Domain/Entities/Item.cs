@@ -1,5 +1,4 @@
-﻿using CShop.Domain.DomainEvents;
-using CShop.Domain.Primitives;
+﻿using CShop.Domain.Primitives;
 
 namespace CShop.Domain.Entities;
 public class Item : AggregateRoot
@@ -26,7 +25,6 @@ public class Item : AggregateRoot
         string? imgBase64 = null)
     {
         var item = new Item(name, price, imgBase64);
-        item.RaiseDomainEvent(new ItemCreatedDomainEvent(item.Id));
         return item;
     }
 
