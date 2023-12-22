@@ -23,8 +23,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
+        var res = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
         await PublishDomainEvents(cancellationToken);
-        return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+        return res;
     }
 
     private async Task PublishDomainEvents(CancellationToken cancellationToken)
