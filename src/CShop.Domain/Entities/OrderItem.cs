@@ -1,4 +1,5 @@
-﻿using CShop.Domain.Primitives;
+﻿using CShop.Domain.Entities.Items;
+using CShop.Domain.Primitives;
 
 namespace CShop.Domain.Entities;
 public class OrderItem : AggregateRoot

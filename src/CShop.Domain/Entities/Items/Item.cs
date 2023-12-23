@@ -2,7 +2,7 @@
 
 using CShop.Domain.Primitives;
 
-namespace CShop.Domain.Entities;
+namespace CShop.Domain.Entities.Items;
 public class Item : AggregateRoot
 {
     protected Item(
@@ -56,7 +56,7 @@ public class Item : AggregateRoot
         var item = ItemIngredients.First(x => x.Id == id);
         item.Update(quantityRequired);
     }
-     
+
     public void DeleteItem(Guid id)
     {
         var itemIngredient = ItemIngredients.FirstOrDefault(s => s.Id == id);
@@ -70,7 +70,8 @@ public class Item : AggregateRoot
     {
         foreach (var itemIngredient in ItemIngredients)
         {
-            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId) ?? throw new ArgumentException($"Ingredient not found");
+            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId) 
+                ?? throw new ArgumentException($"Ingredient not found");
 
             var quantityRequired = itemIngredient.QuantityRequired * quantity;
             ingredient.Subtract(quantityRequired);

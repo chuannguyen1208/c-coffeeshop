@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-using CShop.Domain.Entities;
+using CShop.Domain.Entities.Items;
 
 namespace CShop.UseCases.Dtos;
 public class ItemDto

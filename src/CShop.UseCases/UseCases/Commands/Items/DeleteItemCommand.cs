@@ -1,4 +1,4 @@
-﻿using CShop.Domain.Entities;
+﻿using CShop.Domain.Entities.Items;
 using CShop.UseCases.Infras;
 
 using MediatR;

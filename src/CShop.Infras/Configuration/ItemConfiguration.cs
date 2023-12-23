@@ -1,4 +1,4 @@
-﻿using CShop.Domain.Entities;
+﻿using CShop.Domain.Entities.Items;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

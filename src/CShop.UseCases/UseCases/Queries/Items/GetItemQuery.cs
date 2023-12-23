@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-using CShop.Domain.Entities;
+using CShop.Domain.Entities.Items;
 using CShop.UseCases.Dtos;
 using CShop.UseCases.Infras;
 

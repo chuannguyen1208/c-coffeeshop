@@ -1,6 +1,6 @@
 ﻿using CShop.Domain.Primitives;
 
-namespace CShop.Domain.Entities;
+namespace CShop.Domain.Entities.Items;
 public class ItemIngredient : AggregateRoot
 {
     protected ItemIngredient(

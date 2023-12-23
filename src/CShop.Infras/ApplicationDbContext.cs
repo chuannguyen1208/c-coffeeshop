@@ -1,4 +1,5 @@
 ﻿using CShop.Domain.Entities;
+using CShop.Domain.Entities.Items;
 using CShop.Domain.Primitives;
 
 using MediatR;
