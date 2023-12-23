@@ -1,4 +1,4 @@
-﻿using CShop.Domain.Primitives;
+﻿using CShop.Domain.Primitives.Results;
 
 namespace CShop.Domain.Entities.Items;
 

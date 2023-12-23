@@ -1,6 +1,7 @@
 ﻿using CShop.Domain.Entities;
 using CShop.Domain.Entities.Items;
 using CShop.Domain.Primitives;
+using CShop.Domain.Primitives.Results;
 
 using MediatR;
 
@@ -24,10 +25,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        var res = await Result.Success()
-            .Then(async () => await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken))
+        var res = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken)
             .Tap(async () => await PublishDomainEvents(cancellationToken));
-
         return res.Value;
     }
 
