@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 using CShop.Domain.Primitives;
+using CShop.Domain.Primitives.Results;
 
 namespace CShop.Domain.Entities;
 public class Ingredient : AggregateRoot
@@ -38,13 +39,14 @@ public class Ingredient : AggregateRoot
         StockName = stockName;
     }
 
-    internal void Subtract(int stockLevel)
+    public IResult Subtract(int stockLevel)
     {
         if (StockLevel < stockLevel)
         {
-            throw new ArgumentException($"Ingredient {Name} is not enough.");
+            return Result.Failure(new Error("Ingredient.NotEnough", $"Ingredient {Name} is not enough."));
         }
 
         StockLevel -= stockLevel;
+        return Result.Success;
     }
 }

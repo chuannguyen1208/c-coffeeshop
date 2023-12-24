@@ -27,7 +27,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         var result = await Result.Success
             .Then(async () => await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken))
-            .Tap(async () => await PublishDomainEvents(cancellationToken));
+            .Tap(async _ => await PublishDomainEvents(cancellationToken));
 
         return result.Value;
     }

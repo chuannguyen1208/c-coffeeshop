@@ -1,5 +1,6 @@
 ﻿using CShop.Domain.Events;
 using CShop.Domain.Primitives;
+using CShop.Domain.Primitives.Results;
 
 namespace CShop.Domain.Entities;
 public class Order : AggregateRoot
@@ -25,7 +26,7 @@ public class Order : AggregateRoot
         return entity;
     }
 
-    public void Update(
+    public IResult Update(
         OrderStatus status,
         string? failedReason = null)
     {
@@ -33,6 +34,7 @@ public class Order : AggregateRoot
         FailedReason = failedReason;
 
         RaiseDomainEvent(new OrderUpdatedEvent(this));
+        return Result.Success;
     }
 
     public void AddOrderItem(Guid itemId, int quantity, decimal price)

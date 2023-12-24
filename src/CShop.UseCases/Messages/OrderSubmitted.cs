@@ -1,6 +1,6 @@
 ﻿using CShop.Domain.Entities;
+using CShop.Domain.Primitives.Results;
 using CShop.UseCases.Infras;
-using CShop.UseCases.Services;
 
 using MassTransit;
 
@@ -25,25 +25,35 @@ public class OrderSubmittedConsumer(IUnitOfWorkFactory factory) : IConsumer<Orde
         var order = await orderRepo.GetAsync(context.Message.OrderId, cancellation) ?? throw new Exception($"Order {context.Message.OrderId} not found.");
         var ingredients = await ingredientRepo.Entities.AsNoTracking().ToListAsync();
 
-        try
-        {
-            foreach (var orderItem in order.OrderItems)
+        var result = await Result.Success
+            .Then(() => {
+                foreach (var orderItem in order.OrderItems)
+                {
+                    var repareItemsResult = orderItem.Item.PrepareItems(ingredients, orderItem.Quantity);
+
+                    if (repareItemsResult.IsFailure)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            })
+            .Tap(async isPrepared =>
             {
-                orderItem.Item.PrepareItems(ingredients, orderItem.Quantity);
-            }
+                if (isPrepared)
+                {
+                    await ingredientRepo.UpdateRangeAsync(ingredients, cancellation);
+                }
+            });
 
+        if (result.IsSuccess)
+        {
             order.Update(OrderStatus.Accepted);
-
-            await ingredientRepo.UpdateRangeAsync(ingredients, cancellation);
         }
-        catch (ArgumentException ex)
+        else
         {
-            order.Update(OrderStatus.Returned, ex.Message);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex.Message);
-            throw;
+            order.Update(OrderStatus.Returned, result.Error!.Description);
         }
 
         await unitOfWork.SaveChangesAsync();

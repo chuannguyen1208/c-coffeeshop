@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
 using CShop.Domain.Primitives;
+using CShop.Domain.Primitives.Results;
 
 namespace CShop.Domain.Entities.Items;
 public class Item : AggregateRoot
@@ -66,16 +67,28 @@ public class Item : AggregateRoot
         }
     }
 
-    public void PrepareItems(IEnumerable<Ingredient> ingredients, int quantity = 1)
+    public IResult PrepareItems(IEnumerable<Ingredient> ingredients, int quantity = 1)
     {
         foreach (var itemIngredient in ItemIngredients)
         {
-            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId) 
-                ?? throw new ArgumentException($"Ingredient not found");
+            var ingredient = ingredients.FirstOrDefault(i => i.Id == itemIngredient.IngredientId);
+
+            if (ingredient is null)
+            {
+                return Result.Failure(new Error("Ingredient.Null", "Ingredient not found."));
+            }
 
             var quantityRequired = itemIngredient.QuantityRequired * quantity;
-            ingredient.Subtract(quantityRequired);
+
+            IResult substractIngredientResult = ingredient.Subtract(quantityRequired);
+
+            if (substractIngredientResult.IsFailure)
+            {
+                return substractIngredientResult;
+            }
         }
+
+        return Result.Success;
     }
 
     public int GetQuantityEst(IEnumerable<Ingredient> ingredients)

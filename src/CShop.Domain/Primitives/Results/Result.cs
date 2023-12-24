@@ -16,6 +16,6 @@ public class Result : IResult
     public bool IsFailure => !IsSuccess;
     public Error? Error { get; }
 
-    public static readonly Result Success = new(true, Error.None);
-    public static Result Failure(Error error) => new(false, error);
+    public static readonly IResult Success = new Result(true, Error.None);
+    public static IResult Failure(Error error) => new Result(false, error);
 }
