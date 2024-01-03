@@ -9,6 +9,7 @@ using System.Reflection;
 using WebApp.Services;
 using CShop.UseCases.Services;
 using CShop.UseCases.Messages;
+using Tools.MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 

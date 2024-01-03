@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
 
+using Tools.MediatR;
+
 namespace CShop.UseCases;
 public static class DependencyInjection
 {
@@ -11,15 +13,8 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(assembly);
-        });
-
-        services.AddAutoMapper(cfg =>
-        {
-            cfg.AddMaps(assembly);
-        });
+        services.AddMediatRTool(assembly, typeof(LoggingBehaviour<,>).Assembly);
+        services.AddAutoMapper(cfg => cfg.AddMaps(assembly));
 
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IOrderService, OrderService>();

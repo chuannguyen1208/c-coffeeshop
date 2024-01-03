@@ -13,8 +13,9 @@ public static class MediatRInstaller
 		services.AddValidatorsFromAssemblies(assemblies);
 
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
-		services.AddMediatR(cfg =>
+        services.AddMediatR(cfg =>
 		{
 			cfg.RegisterServicesFromAssemblies(assemblies);
 		});
