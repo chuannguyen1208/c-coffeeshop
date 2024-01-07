@@ -23,6 +23,17 @@ services:
       RABBITMQ_DEFAULT_PASS: rabbitmq
     networks:
       - my_network
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - Seq__Internal__Storage__Type=MSSQLServer
+      - Seq__Internal__Storage__ConnectionString=Server=mssql;Database=seq;User Id=sa;Password=Pass@word;
+    depends_on:
+      - sqlserver
 
 networks:
   my_network:

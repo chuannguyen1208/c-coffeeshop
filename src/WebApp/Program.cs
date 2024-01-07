@@ -19,19 +19,16 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-
+    Log.Information("Start application.");
     var builder = WebApplication.CreateBuilder(args);
-
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
         .Enrich.FromLogContext()
         .WriteTo.Console());
-
     builder.Services.AddUseCases()
         .AddInfras(builder.Configuration)
         .AddAsyncProcessing(builder.Configuration, typeof(OrderSubmitted).Assembly, Assembly.GetExecutingAssembly());
-
     builder.Services.AddScoped<OrderState>();
     builder.Services.AddScoped<OrderKitchenState>();
     builder.Services.AddScoped<IToastService, CommonInterop>();
@@ -62,8 +59,12 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex, "Applycation terminated unexpectedly.");
+    return 1;
 }
 finally
 {
     Log.CloseAndFlush();
 }
+
+
+return 0;

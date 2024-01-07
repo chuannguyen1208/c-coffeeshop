@@ -8,3 +8,6 @@ services:
     volumes:
       - ./.containers/${ENVIRONMENT}/rabbitmq/data:/var/lib/rabbitmq
       - ./.containers/${ENVIRONMENT}/rabbitmq/logs:/var/log/rabbitmq
+  seq:
+    volumes:
+      - ./.containers/${ENVIRONMENT}/seq/logs:/data
