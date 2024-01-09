@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 
+using Tools.MediatR;
+
 namespace WebApp.IntegrationTest;
 
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>
@@ -20,10 +22,15 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("cshop-test");
-            });
+
+            services.AddDbContextFactory<ApplicationDbContext>(
+                options => options
+                    .UseLazyLoadingProxies()
+                    .UseInMemoryDatabase("cshop-integration"));
+
+
         });
+
+        builder.UseEnvironment("Development");
     }
 }

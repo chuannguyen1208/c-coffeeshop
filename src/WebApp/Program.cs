@@ -16,18 +16,20 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console()
-    .CreateBootstrapLogger();
+    .CreateLogger();
 
 try
 {
     Log.Information("Start application.");
     var builder = WebApplication.CreateBuilder(args);
-    builder.Host.UseSerilog((context, services, configuration) => configuration
+    builder.Host
+        .UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
         .Enrich.FromLogContext()
         .WriteTo.Console());
-    builder.Services.AddUseCases()
+    builder.Services
+        .AddUseCases()
         .AddInfras(builder.Configuration)
         .AddAsyncProcessing(builder.Configuration, typeof(OrderSubmitted).Assembly, Assembly.GetExecutingAssembly());
     builder.Services.AddSwaggerTool();
