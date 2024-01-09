@@ -63,5 +63,6 @@
 		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.0" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
 	</ItemGroup>
 </Project>

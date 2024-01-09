@@ -10,6 +10,7 @@ using CShop.UseCases.Services;
 using CShop.UseCases.Messages;
 using Serilog;
 using Serilog.Events;
+using Tools.Swagger;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -29,6 +30,7 @@ try
     builder.Services.AddUseCases()
         .AddInfras(builder.Configuration)
         .AddAsyncProcessing(builder.Configuration, typeof(OrderSubmitted).Assembly, Assembly.GetExecutingAssembly());
+    builder.Services.AddSwaggerTool();
     builder.Services.AddScoped<OrderState>();
     builder.Services.AddScoped<OrderKitchenState>();
     builder.Services.AddScoped<IToastService, CommonInterop>();
@@ -41,6 +43,7 @@ try
     var app = builder.Build();
     app.UseSerilogRequestLogging();
     app.UsePathBase("/c");
+    app.UseSwaggerTool();
 
     if (!app.Environment.IsDevelopment())
     {
@@ -54,6 +57,9 @@ try
         .MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();
     app.ApplyInfrasMigration();
+
+    app.MapGet("api/", () => "Hello World.");
+
     app.Run();
 }
 catch (Exception ex)
@@ -66,5 +72,6 @@ finally
     Log.CloseAndFlush();
 }
 
-
 return 0;
+
+public partial class Program { }
