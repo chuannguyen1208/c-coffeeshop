@@ -1,11 +1,12 @@
-﻿using CShop.UseCases.Services;
+﻿using CShop.Domain.Services;
+
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace WebApp.Services;
 
 internal class FileUploader(IHostEnvironment env) : IFileUploader
 {
-    private readonly long maxFileSize = 1024 * 150; // 150kb
+    private readonly long _maxFileSize = 1024 * 150; // 150kb
 
     public async Task<string> UploadFile(IBrowserFile file, string fileName)
     {
@@ -14,7 +15,7 @@ internal class FileUploader(IHostEnvironment env) : IFileUploader
         var path = Path.Combine(env.ContentRootPath, "wwwroot", returnFilePath);
 
         await using FileStream fs = new(path, FileMode.Create);
-        await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+        await file.OpenReadStream(_maxFileSize).CopyToAsync(fs);
 
         return returnFilePath;
     }

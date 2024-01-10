@@ -1,5 +1,5 @@
-﻿using CShop.Infras.Repo;
-using CShop.UseCases.Infras;
+﻿using CShop.Domain.Repositories;
+using CShop.Infras.Repo;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

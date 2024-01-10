@@ -1,4 +1,7 @@
 ﻿@using CShop.Domain.Entities
+
+@using CShop.Contracts.Orders
+
 @page "/orders"
 @rendermode InteractiveServer
 @implements IDisposable
@@ -71,7 +74,7 @@
         await kitchenState.Init();
     }
 
-    void ChangeStatus(ChangeEventArgs e, OrderDto order)
+    void ChangeStatus(ChangeEventArgs e, OrderResponse order)
     {
         var statusString = (string)e.Value!;
         if (Enum.TryParse<OrderStatus>(statusString, out var status))
@@ -80,14 +83,14 @@
         }
     }
 
-    async Task SaveStatus(OrderDto order)
+    async Task SaveStatus(OrderResponse order)
     {
         await kitchenState.SaveOrderStatus(order);
     }
 
-    bool ShowChangeStatusBtn(OrderDto order) => order.Status != OrderStatus.Completed && order.Status != OrderStatus.Returned;
+    bool ShowChangeStatusBtn(OrderResponse order) => order.Status != OrderStatus.Completed && order.Status != OrderStatus.Returned;
 
-    string StatusColor(OrderDto order)
+    string StatusColor(OrderResponse order)
     {
         return order.Status switch
         {

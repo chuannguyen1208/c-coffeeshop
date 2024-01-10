@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
         <PackageReference Include="MediatR" />
     </ItemGroup>

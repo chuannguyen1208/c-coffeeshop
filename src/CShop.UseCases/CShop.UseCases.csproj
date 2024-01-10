@@ -15,6 +15,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\CShop.Contracts\CShop.Contracts.csproj" />
 	  <ProjectReference Include="..\CShop.Domain\CShop.Domain.csproj" />
 	  <ProjectReference Include="..\Tools\Tools.csproj" />
 	</ItemGroup>

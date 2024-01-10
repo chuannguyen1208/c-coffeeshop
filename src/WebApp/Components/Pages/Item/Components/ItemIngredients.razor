@@ -1,5 +1,11 @@
-﻿@inject IIngredientService ingredientService
-@inject IItemService itemService
+﻿@using CShop.Contracts.Ingredients
+@using CShop.Contracts.Items
+
+@using CShop.UseCases.Ingredients.Queries
+@using CShop.UseCases.Items.Queries
+
+@inject IMediator mediator
+@inject IMapper mapper
 
 @foreach (var itemIngredient in itemIngredients)
 {
@@ -29,23 +35,28 @@
 </button>
 
 @code {
-    private IEnumerable<IngredientDto> ingredients = [];
+    private IEnumerable<IngredientResponse> ingredients = [];
 
     [Parameter]
     public Guid? ItemId { get; set; }
-    public List<ItemIngredientDto> itemIngredients = [];
+    public List<ItemIngredientRequest> itemIngredients = [];
 
     protected override async Task OnInitializedAsync()
     {
-        ingredients = await ingredientService.GetIngredients();
-        if (!ItemId.HasValue) return;
-        var itemIngredientsEnumerable = await itemService.GetItemsIngredients(ItemId.Value);
-        itemIngredients = itemIngredientsEnumerable.ToList();
+        ingredients = await mediator.Send(new GetIngredientsQuery());
+
+        if (!ItemId.HasValue)
+        {
+            return;
+        }
+
+        var itemIngredientsResponse = await mediator.Send(new GetItemIngredientsQuery(ItemId.Value));
+        itemIngredients = mapper.Map<List<ItemIngredientRequest>>(itemIngredientsResponse);
     }
 
     void AddItemIngredient()
     {
-        itemIngredients.Add(new ItemIngredientDto
+        itemIngredients.Add(new ItemIngredientRequest
             {
                 IngredientId = Guid.NewGuid(),
                 ItemId = ItemId ?? Guid.NewGuid(),

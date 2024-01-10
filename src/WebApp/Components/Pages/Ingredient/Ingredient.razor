@@ -1,9 +1,14 @@
-﻿@page "/settings/ingredient"
+﻿@using CShop.Contracts.Ingredients
+@using CShop.UseCases.Ingredients.Queries
+@using CShop.UseCases.Ingredients.Commands
+
+@page "/settings/ingredient"
 @page "/settings/ingredient/{Id}"
 @rendermode InteractiveServer
-@inject IIngredientService ingredientService
-@inject IToastService toast
 @inject NavigationManager nav
+@inject IMediator mediator
+@inject IMapper mapper
+@inject IToastService toast
 
 <PageTitle>Ingredient</PageTitle>
 
@@ -35,29 +40,31 @@
 
 @code {
     [Parameter] public string? Id { get; set; }
-    IngredientDto model = new IngredientDto { Name = "", StockName = "" };
+    IngredientRequest model = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var hasId = Guid.TryParse(Id, out var id);
-
-        if (!hasId)
+        if (!Guid.TryParse(Id, out var id))
         {
             return;
         }
 
-        model = await ingredientService.GetIngredient(id);
+        var ingredientResponse = await mediator.Send(new GetIngredientQuery(id));
+        model = mapper.Map<IngredientRequest>(ingredientResponse);
     }
 
     async Task Save()
     {
         try
         {
-            var task = string.IsNullOrEmpty(Id) ?
-                ingredientService.CreateIngredient(model)
-                : ingredientService.UpdateIngredient(model);
-
-            await task;
+            if (string.IsNullOrEmpty(Id))
+            {
+                await mediator.Send(new CreateIngredientCommand(model.Name, model.StockName, model.StockLevel));
+            }
+            else
+            {
+                await mediator.Send(new UpdateIngredientCommand(model.Id, model.Name, model.StockName, model.StockLevel));
+            }
 
             nav.NavigateTo("settings");
         }

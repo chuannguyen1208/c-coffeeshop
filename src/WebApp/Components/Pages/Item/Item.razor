@@ -1,11 +1,16 @@
 ﻿@using WebApp.Components.Pages.Item.Components
-@using CShop.UseCases.UseCases.Queries.Items;
+
+@using CShop.Contracts.Items
+
+@using CShop.UseCases.Items.Queries
+@using CShop.UseCases.Items.Commands
 
 @page "/settings/item"
 @page "/settings/item/{Id}"
 @rendermode InteractiveServer
 @inject NavigationManager nav
 @inject IMediator mediator
+@inject IMapper mapper
 
 <PageTitle>Item</PageTitle>
 
@@ -46,7 +51,7 @@
 </div>
 
 @code {
-    ItemDto model = new ItemDto { Name = "" };
+    ItemRequest model = new();
     IBrowserFile? file;
     ItemIngredients settingItemIngredientsElement = default!;
 
@@ -60,7 +65,8 @@
             return;
         }
 
-        model = await mediator.Send(new GetItemQuery(id));
+        var itemResponse = await mediator.Send(new GetItemQuery(id));
+        model = mapper.Map<ItemRequest>(itemResponse);
     }
 
     async Task OnFileInput(InputFileChangeEventArgs e)
@@ -71,9 +77,23 @@
         }
 
         file = e.File;
+
+        await Task.CompletedTask;
     }
 
     async Task Save()
     {
+        var itemIngredients = settingItemIngredientsElement.itemIngredients;
+
+        if (string.IsNullOrEmpty(Id))
+        {
+            await mediator.Send(new CreateItemCommand(model.Name, model.Price, itemIngredients, file));
+        }
+        else
+        {
+            await mediator.Send(new UpdateItemCommand(model.Id, model.Name, model.Price, itemIngredients, file));
+        }
+
+        nav.NavigateTo("settings");
     }
 }

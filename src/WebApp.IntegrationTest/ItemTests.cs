@@ -1,24 +1,20 @@
-﻿using CShop.UseCases.Dtos;
-using CShop.UseCases.UseCases.Commands.Ingredenents;
-using CShop.UseCases.UseCases.Commands.Items;
+﻿
+using CShop.Contracts.Items;
+using CShop.UseCases.Ingredients.Commands;
+using CShop.UseCases.Items.Commands;
 
 namespace WebApp.IntegrationTest;
 
-public class ItemTests : BaseIntegrationTest
+public class ItemTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public ItemTests(IntegrationTestWebAppFactory factory) : base(factory)
-    {
-    }
-
     [Fact]
     public async Task Create_ShouldAdd_NewItemToDatabase()
     {
         // Arrage
-        var command = new CreateItemCommand(new ItemDto
-        {
-            Name = "Espresso",
-            Price = 3.5m
-        }, null, []);
+        var command = new CreateItemCommand(
+            Name: "Espresso",
+            Price: 2m,
+            ItemIngredients: []);
 
         // Act
         var itemId = await _mediator.Send(command);
@@ -32,29 +28,20 @@ public class ItemTests : BaseIntegrationTest
     public async Task Create_ShouldAdd_NewItemWithIngredientToDatabase()
     {
         // Arrage
-        var ingredientId = await _mediator.Send(new CreateIngredientCommand(new IngredientDto
-        {
-            Name = "Sample",
-            StockName = "Sample",
-            StockLevel = 1
-        }));
+        var ingredientId = await _mediator.Send(new CreateIngredientCommand(
+            Name: "Ingredient 1",
+            StockName: "Stock name",
+            StockLevel: 1));
 
         // Act
-        var itemId = await _mediator.Send(
-           new CreateItemCommand(
-               Model: new ItemDto
-               {
-                   Name = "Item",
-                   Price = 3.5m
-               },
-               File: null,
-               ItemIngredients: new List<ItemIngredientDto>
-               {
-                    new() {
-                        Id = ingredientId
-                    }
-               })
-           );
+        var itemId = await _mediator.Send(new CreateItemCommand(
+            Name: "Es",
+            Price: 2m,
+            ItemIngredients: new List<ItemIngredientRequest>
+            {
+                new ItemIngredientRequest { Id = ingredientId }
+            },
+            File: null));
 
         // Assert
         var item = _context.Items.FirstOrDefault(s => s.Id == itemId);

@@ -1,5 +1,5 @@
-﻿using CShop.UseCases.Dtos;
-using CShop.UseCases.UseCases.Queries.Items;
+﻿using CShop.Contracts.Items;
+using CShop.UseCases.Items.Queries;
 
 using MediatR;
 
@@ -7,7 +7,7 @@ namespace WebApp.State;
 
 public class ItemState(IMediator mediator)
 {
-    public IEnumerable<ItemDto> Items { get; private set; } = [];
+    public IEnumerable<ItemResponse> Items { get; private set; } = [];
     public event Action? OnChanged;
 
     public async Task GetItems()

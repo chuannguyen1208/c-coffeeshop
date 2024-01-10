@@ -1,6 +1,13 @@
-﻿using CShop.Domain.Entities;
-using CShop.UseCases.Dtos;
-using CShop.UseCases.Services;
+﻿using AutoMapper;
+
+using CShop.Contracts.Items;
+using CShop.Contracts.Orders;
+using CShop.Domain.Entities;
+using CShop.UseCases.Items.Queries;
+using CShop.UseCases.Orders.Commands;
+using CShop.UseCases.Orders.Queries;
+
+using MediatR;
 
 using WebApp.Interop;
 using WebApp.Services;
@@ -10,26 +17,26 @@ namespace WebApp.State;
 public class OrderState : IDisposable
 {
     private readonly Guid _id;
-    private readonly IItemService _itemService;
-    private readonly IOrderService _orderService;
+    private readonly IMediator _mediator;
     private readonly IToastService _toastService;
+    private readonly IMapper _mapper;
     private readonly OrderBridge _orderMessageBridge;
 
     public OrderState(
-        IItemService itemService,
-        IOrderService orderService,
+        IMediator mediator,
         IToastService toastService,
-        OrderBridge orderMessageBridge)
+        OrderBridge orderMessageBridge,
+        IMapper mapper)
     {
-        _itemService = itemService;
-        _orderService = orderService;
+        _mediator = mediator;
         _toastService = toastService;
         _orderMessageBridge = orderMessageBridge;
         _orderMessageBridge.OrderUpdated += OrderUpdated;
         _id = Guid.NewGuid();
+        _mapper = mapper;
     }
 
-    private async Task OrderUpdated(OrderDto order)
+    private async Task OrderUpdated(OrderResponse order)
     {
         if (order.Id != Order.Id)
         {
@@ -43,30 +50,31 @@ public class OrderState : IDisposable
         {
             await GetItems();
         }
+
         NotifyStateChanged();
     }
 
     public event Action? OnChange;
-    public IEnumerable<ItemDto> Items { get; set; } = [];
-    public OrderDto Order { get; set; } = new OrderDto();
+    public IEnumerable<ItemResponse> Items { get; set; } = [];
+    public OrderRequest Order { get; set; } = new();
 
     public async Task GetItems()
     {
-        Items = await _itemService.GetItems().ConfigureAwait(false);
+        Items = await _mediator.Send(new GetItemsQuery());
     }
 
-    public void AddItem(ItemDto item)
+    public void AddItem(ItemResponse item)
     {
         var orderItem = Order.OrderItems.FirstOrDefault(x => x.ItemId == item.Id);
 
         if (orderItem is null)
         {
-            Order.OrderItems.Add(new OrderItemDto
+            Order.OrderItems.Add(new OrderItemRequest
             {
                 ItemId = item.Id,
-                Name = item.Name,
                 Price = item.Price,
-                Quantity = 1
+                Quantity = 1,
+                Name = item.Name,
             });
         }
         else
@@ -77,7 +85,7 @@ public class OrderState : IDisposable
         NotifyStateChanged();
     }
 
-    public void MinusQuantity(OrderItemDto item)
+    public void MinusQuantity(OrderItemRequest item)
     {
         item.Quantity -= 1;
 
@@ -88,7 +96,7 @@ public class OrderState : IDisposable
         NotifyStateChanged();
     }
 
-    public void AddQuantity(OrderItemDto item)
+    public void AddQuantity(OrderItemRequest item)
     {
         item.Quantity += 1;
         NotifyStateChanged();
@@ -102,13 +110,27 @@ public class OrderState : IDisposable
 
     public async Task RetrieveOrder(Guid orderId)
     {
-        Order = await _orderService.GetOrder(orderId).ConfigureAwait(false);
+        var order = await _mediator.Send(new GetOrderQuery(orderId));
+        if (order is null)
+        {
+            return;
+        }
+
+        Order = _mapper.Map<OrderRequest>(order);
         NotifyStateChanged();
     }
 
     public async Task Submit()
     {
-        Order = await _orderService.UpsertOrder(Order);
+        if (Order.Id == Guid.Empty)
+        {
+            await _mediator.Send(new CreateOrderCommand(Order.OrderItems));
+        }
+        else
+        {
+            await _mediator.Send(new UpdateOrderCommand(Order.Id, Order.OrderItems));
+        }
+
         await _toastService.ToastSuccess("Order submitted.");
     }
 

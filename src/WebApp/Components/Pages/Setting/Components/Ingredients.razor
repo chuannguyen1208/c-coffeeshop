@@ -1,6 +1,13 @@
-﻿@inject IIngredientService ingredientService
+﻿@using CShop.Contracts.Ingredients
+
+@using CShop.UseCases.Ingredients.Commands
+@using CShop.UseCases.Ingredients.Queries
+
+@rendermode InteractiveServer
+
 @inject ICommonInterop commonJs
 @inject IToastService toast
+@inject IMediator mediator
 
 <div class="">
     <div>
@@ -29,7 +36,7 @@
 </div>
 
 @code {
-    IEnumerable<IngredientDto> items = [];
+    IEnumerable<IngredientResponse> items = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,7 +50,7 @@
         {
             try
             {
-                await ingredientService.DeleteIngredient(id);
+                await mediator.Send(new DeleteIngredientCommand(id));
                 await LoadItems();
             }
             catch (Exception ex)
@@ -55,6 +62,6 @@
 
     async Task LoadItems()
     {
-        items = await ingredientService.GetIngredients();
+        items = await mediator.Send(new GetIngredientsQuery());
     }
 }

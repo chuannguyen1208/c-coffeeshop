@@ -6,11 +6,11 @@ using WebApp.Interop;
 using Tools.Messaging;
 using System.Reflection;
 using WebApp.Services;
-using CShop.UseCases.Services;
-using CShop.UseCases.Messages;
 using Serilog;
 using Serilog.Events;
 using Tools.Swagger;
+using CShop.UseCases.Orders.Events.Messages;
+using CShop.Domain.Services;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)

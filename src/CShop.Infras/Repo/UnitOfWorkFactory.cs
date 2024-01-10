@@ -1,10 +1,6 @@
-﻿using CShop.UseCases.Infras;
+﻿using CShop.Domain.Repositories;
+
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CShop.Infras.Repo;
 internal class UnitOfWorkFactory(IDbContextFactory<ApplicationDbContext> dbContextFactory) : IUnitOfWorkFactory

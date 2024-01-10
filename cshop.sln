@@ -22,7 +22,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CShop.Domain", "src\CShop.Domain\CShop.Domain.csproj", "{C46DB0DE-89C3-48C0-9972-83823492FC90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.IntegrationTest", "src\WebApp.IntegrationTest\WebApp.IntegrationTest.csproj", "{4B469588-8DCC-47CD-B4B9-506477523219}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.IntegrationTest", "src\WebApp.IntegrationTest\WebApp.IntegrationTest.csproj", "{4B469588-8DCC-47CD-B4B9-506477523219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CShop.Contracts", "src\CShop.Contracts\CShop.Contracts.csproj", "{B2212E50-E595-4A15-8532-CAB26073A543}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{4B469588-8DCC-47CD-B4B9-506477523219}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B469588-8DCC-47CD-B4B9-506477523219}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B469588-8DCC-47CD-B4B9-506477523219}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2212E50-E595-4A15-8532-CAB26073A543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2212E50-E595-4A15-8532-CAB26073A543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2212E50-E595-4A15-8532-CAB26073A543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2212E50-E595-4A15-8532-CAB26073A543}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

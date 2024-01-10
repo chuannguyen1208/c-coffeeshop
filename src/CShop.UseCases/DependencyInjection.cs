@@ -1,4 +1,4 @@
-﻿using CShop.UseCases.Services;
+﻿using CShop.Contracts.Ingredients;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,13 +12,10 @@ public static class DependencyInjection
     public static IServiceCollection AddUseCases(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly();
+        var profileAssembly = typeof(IngredientResponseProfile).Assembly;
 
         services.AddMediatRTool(assembly, typeof(LoggingBehaviour<,>).Assembly);
-        services.AddAutoMapper(cfg => cfg.AddMaps(assembly));
-
-        services.AddScoped<IItemService, ItemService>();
-        services.AddScoped<IOrderService, OrderService>();
-        services.AddScoped<IIngredientService, IngredientService>();
+        services.AddAutoMapper(cfg => cfg.AddMaps(assembly, profileAssembly));
 
         return services;
     }

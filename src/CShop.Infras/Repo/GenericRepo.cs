@@ -1,4 +1,5 @@
-﻿using CShop.UseCases.Infras;
+﻿
+using CShop.Domain.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
