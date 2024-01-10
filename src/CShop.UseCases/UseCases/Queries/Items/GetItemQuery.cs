@@ -8,7 +8,7 @@ using MediatR;
 
 namespace CShop.UseCases.UseCases.Queries.Items;
 
-internal record GetItemQuery(Guid Id) : IRequest<ItemDto>
+public record GetItemQuery(Guid Id) : IRequest<ItemDto>
 {
     private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IMapper mapper) : IRequestHandler<GetItemQuery, ItemDto>
     {

@@ -1,12 +1,12 @@
-﻿@rendermode InteractiveServer
-@inject IItemService itemService
+﻿@inject ItemState itemState
+@implements IDisposable
 
 <div class="">
     <div>
         <a href="settings/item" class="btn btn-primary rounded-pill btn-sm">Create Item</a>
     </div>
     <ul class="list-group mt-2">
-        @foreach (var item in items)
+        @foreach (var item in itemState.Items)
         {
             <li class="list-group-item mb-1">
                 <div class="d-flex justify-content-between">
@@ -29,10 +29,14 @@
 </div>
 
 @code {
-    IEnumerable<ItemDto> items = [];
-
     protected override async Task OnInitializedAsync()
     {
-        items = await itemService.GetItems();
+        itemState.OnChanged += StateHasChanged;
+        await itemState.GetItems();
+    }
+
+    public void Dispose()
+    {
+        itemState.OnChanged -= StateHasChanged;
     }
 }

@@ -1,10 +1,11 @@
-﻿@using WebApp.Components.Pages.Setting.Components.Item
+﻿@using WebApp.Components.Pages.Item.Components
+@using CShop.UseCases.UseCases.Queries.Items;
+
 @page "/settings/item"
 @page "/settings/item/{Id}"
 @rendermode InteractiveServer
-@inject IItemService itemService
-@inject IToastService toast
 @inject NavigationManager nav
+@inject IMediator mediator
 
 <PageTitle>Item</PageTitle>
 
@@ -49,55 +50,30 @@
     IBrowserFile? file;
     ItemIngredients settingItemIngredientsElement = default!;
 
-    [Parameter] 
+    [Parameter]
     public string? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var hasId = Guid.TryParse(Id, out var id);
-
-        if (!hasId)
+        if (!Guid.TryParse(Id, out var id))
         {
             return;
         }
 
-        model = await itemService.GetItem(id);
+        model = await mediator.Send(new GetItemQuery(id));
     }
 
     async Task OnFileInput(InputFileChangeEventArgs e)
     {
-        if (e.FileCount > 0)
+        if (e.FileCount == 0 || !e.File.ContentType.StartsWith("image"))
         {
-            if (!e.File.ContentType.StartsWith("image"))
-            {
-                await toast.ToastError("File selected must be image format.");
-                return;
-            }
-
-            file = e.File;
+            return;
         }
+
+        file = e.File;
     }
 
     async Task Save()
     {
-        try
-        {
-            var ingredients = settingItemIngredientsElement.itemIngredients;
-
-            if (string.IsNullOrEmpty(Id))
-            {
-                await itemService.CreateItem(model, file, ingredients);
-            }
-            else
-            {
-                await itemService.UpdateItem(model, file, ingredients);
-            }
-
-            nav.NavigateTo("settings");
-        }
-        catch (Exception ex)
-        {
-            await toast.ToastError(ex.Message);
-        }
     }
 }

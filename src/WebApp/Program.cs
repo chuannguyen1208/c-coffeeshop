@@ -35,6 +35,7 @@ try
     builder.Services.AddSwaggerTool();
     builder.Services.AddScoped<OrderState>();
     builder.Services.AddScoped<OrderKitchenState>();
+    builder.Services.AddScoped<ItemState>();
     builder.Services.AddScoped<IToastService, CommonInterop>();
     builder.Services.AddScoped<ICommonInterop, CommonInterop>();
     builder.Services.AddTransient<IFileUploader, FileUploader>();
