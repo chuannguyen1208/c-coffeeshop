@@ -5,11 +5,11 @@ using CShop.UseCases.Infras;
 using MediatR;
 
 namespace CShop.UseCases.UseCases.Commands.Ingredenents;
-public record CreateIngredientCommand(IngredientDto Model) : IRequest
+public record CreateIngredientCommand(IngredientDto Model) : IRequest<Guid>
 {
-    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<CreateIngredientCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory) : IRequestHandler<CreateIngredientCommand, Guid>
     {
-        public async Task Handle(CreateIngredientCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateIngredientCommand request, CancellationToken cancellationToken)
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Ingredient>();
@@ -18,6 +18,7 @@ public record CreateIngredientCommand(IngredientDto Model) : IRequest
             await repo.CreateAsync(entity, cancellationToken);
 
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
+            return entity.Id;
         }
     }
 }

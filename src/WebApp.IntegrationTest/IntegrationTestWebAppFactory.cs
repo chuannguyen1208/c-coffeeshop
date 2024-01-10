@@ -22,13 +22,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
-
             services.AddDbContextFactory<ApplicationDbContext>(
                 options => options
                     .UseLazyLoadingProxies()
                     .UseInMemoryDatabase("cshop-integration"));
-
-
         });
 
         builder.UseEnvironment("Development");

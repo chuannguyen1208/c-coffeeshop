@@ -8,11 +8,11 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace CShop.UseCases.UseCases.Commands.Items;
-public record CreateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<ItemIngredientDto> ItemIngredients) : IRequest
+public record CreateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<ItemIngredientDto> ItemIngredients) : IRequest<Guid>
 {
-    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IFileUploader fileUploader) : IRequestHandler<CreateItemCommand>
+    private class Handler(IUnitOfWorkFactory unitOfWorkFactory, IFileUploader fileUploader) : IRequestHandler<CreateItemCommand, Guid>
     {
-        public async Task Handle(CreateItemCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
             using var unitOfwork = unitOfWorkFactory.CreateUnitOfWork();
             var repo = unitOfwork.GetRepo<Item>();
@@ -33,6 +33,8 @@ public record CreateItemCommand(ItemDto Model, IBrowserFile? File, IEnumerable<I
 
             await repo.CreateAsync(item, cancellationToken).ConfigureAwait(false);
             await unitOfwork.SaveChangesAsync().ConfigureAwait(false);
+
+            return item.Id;
         }
     }
 }
